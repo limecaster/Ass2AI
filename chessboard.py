@@ -1,17 +1,24 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 
-class ChessBoard(tk.Frame):
-    def __init__(self, parent, current_board=None, current_player='white', move_log=[]):
-        tk.Frame.__init__(self, parent)
+class ChessBoard(tk.Tk):
+    def __init__(self, current_board=None, current_player='white', move_log=[]):
+        super().__init__()
         self.rows = 8
         self.columns = 8
         self.size = 64
+        
+        self.title("Chess game")  
         self.canvas = tk.Canvas(self, width=self.columns*self.size, height=self.rows*self.size)
         self.canvas.pack(fill="both", expand=True)
         self.draw_board()
         self.piece_images = self.load_piece_images()
         self.draw_pieces()
+        
+        self.drag_data = {"piece": None, "x": 0, "y": 0}
+        self.canvas.bind("<Button-1>", self.start_drag)
+        self.canvas.bind("<B1-Motion>", self.drag)
+        self.canvas.bind("<ButtonRelease-1>", self.drop)
         
         self.current_board = current_board
         self.current_player = current_player
@@ -73,12 +80,39 @@ class ChessBoard(tk.Frame):
                     self.canvas.create_image(col * self.size + self.size/2, row * self.size + self.size/2,
                                              image=piece_image)
     
+    def start_drag(self, event):
+        x, y = event.x, event.y
+        overlapping = self.canvas.find_overlapping(x, y, x, y)
+        if overlapping:
+            tags = self.canvas.gettags(overlapping[-1])
+            print(tags)
+            if "piece" in tags:
+                self.drag_data["piece"] = overlapping[-1]
+                self.drag_data["x"] = x
+                self.drag_data["y"] = y
+    
+    def drag(self, event):
+        if self.drag_data["piece"]:
+            dx = event.x - self.drag_data["x"]
+            dy = event.y - self.drag_data["y"]
+            self.canvas.move(self.drag_data["piece"], dx, dy)
+            self.drag_data["x"] = event.x
+            self.drag_data["y"] = event.y
+    
+    def drop(self, event):
+        if self.drag_data["piece"]:
+            x, y = event.x, event.y
+            square_size = 50
+            row = y // square_size
+            col = x // square_size
+            new_x = col * square_size + square_size // 2
+            new_y = row * square_size + square_size // 2
+            self.canvas.coords(self.drag_data["piece"], new_x - 25, new_y - 25)
+            self.drag_data["piece"] = None
     
     def get_all_possible_moves(self):
         pass
 
-
-root = tk.Tk()
-board = ChessBoard(root)
-board.pack(side="top", fill="both", expand="true", padx=4, pady=4)
-root.mainloop()
+if __name__ == "__main__":
+    app = ChessBoard()
+    app.mainloop()
