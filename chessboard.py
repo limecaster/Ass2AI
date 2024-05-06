@@ -78,7 +78,7 @@ class ChessBoard(tk.Tk):
                 if piece != '':
                     piece_image = self.piece_images[piece]
                     self.canvas.create_image(col * self.size + self.size/2, row * self.size + self.size/2,
-                                             image=piece_image)
+                                             image=piece_image, tags=(piece, "piece"))
     
     def start_drag(self, event):
         x, y = event.x, event.y
@@ -102,14 +102,46 @@ class ChessBoard(tk.Tk):
     def drop(self, event):
         if self.drag_data["piece"]:
             x, y = event.x, event.y
-            square_size = 50
-            row = y // square_size
-            col = x // square_size
-            new_x = col * square_size + square_size // 2
-            new_y = row * square_size + square_size // 2
-            self.canvas.coords(self.drag_data["piece"], new_x - 25, new_y - 25)
+            square_size = self.size
+            #col * self.size + self.size/2, row * self.size + self.size/2,
+            row = (y) // square_size
+            col = (x) // square_size
+            print(row,col)
+            new_x = col * square_size + square_size / 2
+            new_y = row * square_size + square_size / 2
+            self.canvas.coords(self.drag_data["piece"], new_x , new_y)
             self.drag_data["piece"] = None
-    
+    def translate_algebraic_notation(self, notation):
+        notation = notation.strip().replace(" ", "").replace("\n", "")
+        if len(notation) < 2 or len(notation) > 4:
+            print("Invalid notation length.")
+            return None
+        start_square = notation[:2]
+        end_square = notation[2:]
+        start_col = ord(start_square[0]) - ord('a')
+        start_row = 8 - int(start_square[1])
+        end_col = ord(end_square[0]) - ord('a')
+        end_row = 8 - int(end_square[1])
+        return start_row, start_col, end_row, end_col
+
+    def make_move_from_algebraic_notation(self, notation):
+        """Make a move on the board using algebraic notation (e.g. e2e4)."""
+        move = self.translate_algebraic_notation(notation)
+        if move:
+            start_row, start_col, end_row, end_col = move
+            piece = self.get_piece_at_position(start_row, start_col)
+            if piece and self.is_valid_move(piece, start_row, start_col, end_row, end_col):
+                self.board.delete(self.get_piece_at_position(end_row, end_col))  # Remove the captured piece
+                self.board.move(piece, (end_col - start_col) * 50, (end_row - start_row) * 50)
+
+    def get_piece_at_position(self, row, col):
+        overlapping = self.board.find_overlapping(col * 50, row * 50, col * 50, row * 50)
+        if overlapping:
+            for item in overlapping:
+                tags = self.board.gettags(item)
+                if "piece" in tags:
+                    return item
+        return None
     def get_all_possible_moves(self):
         pass
 
