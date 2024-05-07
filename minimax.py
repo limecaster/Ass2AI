@@ -1,3 +1,7 @@
+from chessboard import ChessBoard, Move
+import time
+import psutil
+
 class Minimax:
     def __init__(self, depth, board):
         self.depth = depth
@@ -166,7 +170,7 @@ class Minimax:
             max_eval = float('-inf')
             for move in self.board.get_all_possible_moves('white'):
                 self.board.make_move(move)
-                eval = self._minimax(depth - 1, self.board.get_board(), False, alpha, beta)
+                eval = self._minimax(depth - 1, self.board.get_board()[0], False, alpha, beta)
                 self.board.undo_move()
                 max_eval = max(max_eval, eval)
                 alpha = max(alpha, eval)
@@ -177,7 +181,7 @@ class Minimax:
             min_eval = float('inf')
             for move in self.board.get_all_possible_moves('black'):
                 self.board.make_move(move)
-                eval = self._minimax(depth - 1, self.board.get_board(), True, alpha, beta)
+                eval = self._minimax(depth - 1, self.board.get_board()[0], True, alpha, beta)
                 self.board.undo_move()
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
@@ -197,7 +201,7 @@ class Minimax:
         if is_maximizing_player:
             for move in self.board.get_all_possible_moves('white'):
                 self.board.make_move(move)
-                eval = self._minimax(self.depth - 1, self.board.get_board(), False, alpha, beta)
+                eval = self._minimax(self.depth - 1, self.board.get_board()[0], False, alpha, beta)
                 self.board.undo_move()
                 if eval > best_eval:
                     best_eval = eval
@@ -205,7 +209,7 @@ class Minimax:
         else:
             for move in self.board.get_all_possible_moves('black'):
                 self.board.make_move(move)
-                eval = self._minimax(self.depth - 1, self.board.get_board(), True, alpha, beta)
+                eval = self._minimax(self.depth - 1, self.board.get_board()[0], True, alpha, beta)
                 self.board.undo_move()
                 if eval < best_eval:
                     best_eval = eval
@@ -220,4 +224,26 @@ class Minimax:
         return self.get_best_move(False)
 
 
+if __name__ == '__main__':
+    start_time = time.time()
+    start_memory = psutil.Process().memory_info().rss
+
+    board = ChessBoard()    
+    minimax = Minimax(3, board)
     
+    for i in range(20):
+        white_move = minimax.get_best_move_for_white()
+        board.make_move(white_move)
+        print(white_move)
+        black_move = minimax.get_best_move_for_black()
+        board.make_move(black_move)
+        print(black_move)
+        print(board.get_board()[0])
+    end_time = time.time()
+    end_memory = psutil.Process().memory_info().rss
+
+    execution_time = end_time - start_time
+    memory_consumption = end_memory - start_memory
+
+    print(f"Execution time: {execution_time} seconds")
+    print(f"Memory consumption: {memory_consumption} bytes")
