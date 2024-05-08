@@ -568,7 +568,7 @@ class ChessBoard(tk.Tk):
                         k+=1
                     k = 1
                     while i - k >= 0:
-                        if (i+k,j) in impactPos[side]:
+                        if (i - k,j) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j),self.current_board[i][j]))
                         else:
                             break
