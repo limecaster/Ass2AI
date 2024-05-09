@@ -524,23 +524,44 @@ class ChessBoard(tk.Tk):
         for i in range(8):
             for j in range(8):
                 if self.current_board[i][j].find("pawn") >= 0 and self.current_board[i][j].find(player) >= 0:
-                    directions = [(1,0),(2,0),(1,1),(1,-1)]
+                    direction = (1,0)
+                    doubleDirection = (2,0)
+                    attackDirections = [(1,1), (1,-1)]
                     promoteList = ['rook', 'knight', 'bishop', 'queen']
-
+                    mList = []
                     if player == 'black':
-                        for direction in list(filter(lambda x: (i+x[0],j+x[1]) in impactPos[0],directions)):
-                            if i + direction[0] == 7:
+                        if (i+direction[0],j+direction[1]) in impactPos[0] and self.current_board[i+direction[0]][j+direction[1]]=="":
+                            mList.append(Move((i,j),(i+direction[0],j+direction[1]),self.current_board[i][j]))
+                            if (i+direction[0]*2,j+direction[1]) in impactPos[0] and self.current_board[i+direction[0]*2][j+direction[1]]=="" and i==1:
+                                mList.append(Move((i,j),(i+direction[0]*2,j+direction[1]),self.current_board[i][j]))
+                        for dir in attackDirections:
+                            if (i+dir[0],j+dir[1]) in impactPos[0] and self.current_board[i+dir[0]][j+dir[1]].find("white")>=0:
+                                mList.append(Move((i,j),(i+dir[0],j+dir[1]),self.current_board[i][j]))
+                        for m in mList:
+                            if m.new_pos[0] == 7:
+                                
                                 for pr in promoteList:
-                                    movesList.append(Move((i,j),(i+direction[0],j+direction[1]),self.current_board[i][j],special_move="promote",promoted = self.current_board[i][j].replace("pawn",pr)))
+                                    movesList.append(Move(m.position,m.new_pos,m.unit_type,special_move="promote",promoted = m.unit_type.replace("pawn",pr)))
                             else:
-                                movesList.append(Move((i,j),(i+direction[0],j+direction[1]),self.current_board[i][j]))
+                                movesList.append(m)
+        
+
+                        
                     elif player == 'white':
-                        for direction in list(filter(lambda x: (i-x[0],j-x[1]) in impactPos[1],directions)):
-                            if i - direction[0] == 0:
+                        if (i-direction[0],j-direction[1]) in impactPos[0] and self.current_board[i-direction[0]][j-direction[1]]=="":
+                            mList.append(Move((i,j),(i-direction[0],j-direction[1]),self.current_board[i][j]))
+                            if (i-direction[0]*2,j-direction[1]) in impactPos[0] and self.current_board[i-direction[0]*2][j-direction[1]]=="" and i==6:
+                                mList.append(Move((i,j),(i-direction[0]*2,j-direction[1]),self.current_board[i][j]))
+                        for dir in attackDirections:
+                            if (i-dir[0],j-dir[1]) in impactPos[0] and self.current_board[i-dir[0]][j-dir[1]].find("black")>=0:
+                                mList.append(Move((i,j),(i-dir[0],j-dir[1]),self.current_board[i][j]))
+                        for m in mList:
+                            if m.new_pos[0] == 0:
+                                
                                 for pr in promoteList:
-                                    movesList.append(Move((i,j),(i+direction[0],j-direction[1]),self.current_board[i][j],special_move="promote",promoted = self.current_board[i][j].replace("pawn",pr)))
+                                    movesList.append(Move(m.position,m.new_pos,m.unit_type,special_move="promote",promoted = m.unit_type.replace("pawn",pr)))
                             else:
-                                movesList.append(Move((i,j),(i-direction[0],j-direction[1]),self.current_board[i][j]))
+                                movesList.append(m)
                 elif self.current_board[i][j].find("rook") >= 0 and self.current_board[i][j].find(player) >= 0:
                     side = 0
                     if player == "white":
