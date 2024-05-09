@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import copy
+import numpy as np
 class Move():
     def __init__(self, position, newPos, unitType, special_move = "", promoted = "") -> None:
         self.position = position
@@ -172,6 +173,7 @@ class ChessBoard(tk.Tk):
             # if self.curr
             new_x = col * square_size + square_size / 2
             new_y = row * square_size + square_size / 2
+            
             self.canvas.coords(self.drag_data["piece"], new_x , new_y)
             overlapping = self.canvas.find_overlapping(x, y, x, y)
         
@@ -194,6 +196,7 @@ class ChessBoard(tk.Tk):
             self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = unit
             if self.move_log[-1].special_move == "promote":
                 self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
+            
         # self.make_move(self.move_log[-1])
 
     def translate_algebraic_notation(self, notation):
@@ -578,10 +581,6 @@ class ChessBoard(tk.Tk):
                         if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
                             impactPos[0].append((i+m[0],j+m[1]))
         return impactPos
-
-            
-       
-
 
     def get_all_possible_moves(self,player: str = ['white', 'black']):
         impactPos = self.get_all_impact() #[0] is for black, [1] is for white (not racist)
@@ -1158,9 +1157,69 @@ class ChessBoard(tk.Tk):
                     
         return impactPos
         
+    def read_move(self,move:Move):
+      # position, newPos, unitType, special_move = "", promoted = "" 
+        
+        oldPosX = move.position[1]*self.size + self.size / 2
+        oldPosY = move.position[0]*self.size+ self.size / 2
+        newPosX = move.new_pos[1]*self.size+ self.size / 2
+        newPosY = move.new_pos[0]*self.size+ self.size / 2
 
+        oldX = move.position[1]
+        oldY = move.position[0]
+        newX = move.new_pos[1]
+        newY = move.new_pos[0]
 
+        overlapping = self.canvas.find_overlapping(oldPosX, oldPosY, oldPosX, oldPosY)
+        moves = self.impact_pos(move.unit_type,(oldY,oldX))
+        print(f"{move.unit_type} {moves}")
+        if (newY,newX) not in moves:
+            print("error")
+            return
+        else:
+            self.previous_board.insert(0,copy.deepcopy(self.current_board))
 
+            a,b = oldPosX,oldPosY
+            x,y = newPosX,newPosY
+            r = int((b)//self.size)
+            c= int((a)//self.size)
+            
+            square_size = self.size
+            #col * self.size + self.size/2, row * self.size + self.size/2,
+            row = int((y) // square_size)
+            col = int((x) // square_size)
+
+            # if self.curr
+            new_x = col * square_size + square_size / 2
+            new_y = row * square_size + square_size / 2
+            # overlapping = self.canvas.find_overlapping(x, y, x, y)
+            # print(overlapping[-1])
+            
+            self.canvas.coords(overlapping[-1], new_x , new_y)
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+        
+            if move.unit_type.find("white")==0:
+                self.type = 0 
+            else: self.type =1
+            if (len(overlapping) ==3):
+                if self.type ==0:
+                    self.canvas.delete(overlapping[1])
+                else: self.canvas.delete(overlapping[2])
+            self.drag_data["piece"] = None
+            # position, newPos, unitType, special_move = "", promoted = ""
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+            tags = self.canvas.gettags(overlapping[-1])             
+            self.move_log.append(Move((r,c),(row,col),tags[0]))
+            for ele in self.move_log:
+                print(ele)
+            self.previous_board.insert(0,copy.deepcopy(self.current_board))
+            self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]] = ""
+            self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = move.unit_type
+            if self.move_log[-1].special_move == "promote":
+                self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
+
+        
+        
 
 
 if __name__ == "__main__":
@@ -1168,5 +1227,9 @@ if __name__ == "__main__":
     print(app.get_all_impact())
     for i in app.get_all_possible_moves("black"):
         print(i)
-
+    app.read_move(Move((1,0),(3,0),"black_pawn"))
+    app.read_move(Move((3,0),(4,0),"black_pawn"))
+    app.read_move(Move((4,0),(5,0),"black_pawn"))
+    app.read_move(Move((5,0),(6,1),"black_pawn"))
+    app.read_move(Move((7,2),(6,1),"white_bishop"))
     app.mainloop()
