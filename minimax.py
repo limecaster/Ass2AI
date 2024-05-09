@@ -198,7 +198,7 @@ class Minimax:
         alpha = float('-inf')
         beta = float('inf')
         number_possible_moves = len(self.board.get_all_possible_moves('white')) if is_maximizing_player else len(self.board.get_all_possible_moves('black'))
-        
+        print(f'Number of Possible moves for {"white" if is_maximizing_player else "black"}: {number_possible_moves}')
         if is_maximizing_player:
             for move in self.board.get_all_possible_moves('white'):
                 self.board.make_move(move)
