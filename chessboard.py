@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import copy
+import numpy as np
 class Move():
     def __init__(self, position, newPos, unitType, special_move = "", promoted = "") -> None:
         self.position = position
@@ -26,7 +27,7 @@ class ChessBoard(tk.Tk):
         self.canvas = tk.Canvas(self, width=self.columns*self.size, height=self.rows*self.size)
         self.canvas.pack(fill="both", expand=True)
         self.draw_board()
-
+        self.click = False
 
         self.current_board = current_board
         self.blackCastled = False
@@ -41,7 +42,12 @@ class ChessBoard(tk.Tk):
         
         self.current_player = current_player
         self.move_log = move_log
-        
+
+        # tkinter
+        self.oldPosX = None
+        self.oldPosY = None
+        self.type = None
+        self.impactPos = None
 
     def draw_board(self):
         color = ["#EBECD0", "#739552"]
@@ -105,32 +111,94 @@ class ChessBoard(tk.Tk):
         overlapping = self.canvas.find_overlapping(x, y, x, y)
         if overlapping:
             tags = self.canvas.gettags(overlapping[-1])
+            # print(overlapping[-1])
             print(tags)
+            self.oldPosX = x
+            self.oldPosY = y
+            row = (y) // self.size
+            col = (x) // self.size
+            # print(f'tag:{tags[0]}') # tag[0] -> unitType
+            # print(self.impact_pos())
+            if tags[0].find("white")==0:
+                self.type = 0 
+            else: self.type =1
+            moves = self.impact_pos(tags[0],(row,col))
+            # print(moves)
+            for move in moves:
+                row = (move[0])
+                col = (move[1])
+                x1 = col * self.size
+                y1 = row * self.size
+                x2 = x1 + self.size
+                y2 = y1 + self.size
+                # self.canvas.create_rectangle(x1, y1, x2, y2, fill="yellow")
             if "piece" in tags:
                 self.drag_data["piece"] = overlapping[-1]
                 self.drag_data["x"] = x
                 self.drag_data["y"] = y
+            self.impactPos = moves
     
     def drag(self, event):
+        
         if self.drag_data["piece"]:
             dx = event.x - self.drag_data["x"]
             dy = event.y - self.drag_data["y"]
             self.canvas.move(self.drag_data["piece"], dx, dy)
             self.drag_data["x"] = event.x
             self.drag_data["y"] = event.y
+        
     
     def drop(self, event):
+
+        row = (event.y) // self.size
+        col = (event.x) // self.size
+        if (row,col) not in self.impactPos:
+            x = ((self.oldPosX)//self.size)*self.size + self.size / 2
+            y = ((self.oldPosY)//self.size)*self.size+ self.size / 2
+            self.canvas.coords(self.drag_data["piece"], x,y)
+            return 
+        
         if self.drag_data["piece"]:
             x, y = event.x, event.y
+            a,b = self.oldPosX,self.oldPosY
+
+            r = (b)//self.size
+            c= (a)//self.size
+            
             square_size = self.size
             #col * self.size + self.size/2, row * self.size + self.size/2,
             row = (y) // square_size
             col = (x) // square_size
-            print(row,col)
+
+            # if self.curr
             new_x = col * square_size + square_size / 2
             new_y = row * square_size + square_size / 2
+            
             self.canvas.coords(self.drag_data["piece"], new_x , new_y)
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+        
+            
+            if (len(overlapping) ==3):
+                if self.type ==0:
+                    self.canvas.delete(overlapping[1])
+                else: self.canvas.delete(overlapping[2])
             self.drag_data["piece"] = None
+            # position, newPos, unitType, special_move = "", promoted = ""
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+            tags = self.canvas.gettags(overlapping[-1])                                                
+
+            self.move_log.append(Move((r,c),(row,col),tags[0]))
+            for ele in self.move_log:
+                print(ele)
+            self.previous_board.insert(0,copy.deepcopy(self.current_board))
+            unit = self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]]
+            self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]] = ""
+            self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = unit
+            if self.move_log[-1].special_move == "promote":
+                self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
+            
+        # self.make_move(self.move_log[-1])
+
     def translate_algebraic_notation(self, notation):
         notation = notation.strip().replace(" ", "").replace("\n", "")
         if len(notation) < 2 or len(notation) > 4:
@@ -514,10 +582,6 @@ class ChessBoard(tk.Tk):
                             impactPos[0].append((i+m[0],j+m[1]))
         return impactPos
 
-            
-       
-
-
     def get_all_possible_moves(self,player: str = ['white', 'black']):
         impactPos = self.get_all_impact() #[0] is for black, [1] is for white (not racist)
         movesList = []
@@ -738,21 +802,424 @@ class ChessBoard(tk.Tk):
         self.canvas.delete("all")
         self.draw_board()
         self.draw_pieces()
+    def impact_pos(self,unitType,pos):
+        impactPos = [] 
+        i,j = pos
+        if unitType == "black_pawn":
+            if i + 1 < 8 and self.current_board[i+1][j] == "":
+                impactPos.append((i+1,j))
+                if i == 1 and i + 2 < 8 and self.current_board[i+2][j] == "":
+                    impactPos.append((i+2,j))
+            if i + 1 < 8 and j + 1 < 8 and self.current_board[i+1][j+1].find("white") == 0:
+                    impactPos.append((i+1,j+1))
+            if i + 1 < 8 and j - 1 >= 0 and self.current_board[i+1][j-1].find("white") == 0:
+                    impactPos.append((i+1,j-1))
+        elif unitType == "black_rook":
+            k = 1
+            while j + k < 8:
+                if self.current_board[i][j+k] == "":
+                    impactPos.append((i,j + k))
+                else:
+                    if self.current_board[i][j+k].find("white")==0:
+                        impactPos.append((i,j + k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8:
+                if self.current_board[i+k][j] == "":
+                    impactPos.append((i+k,j))
+                else:
+                    if self.current_board[i+k][j].find("white")==0:
+                        impactPos.append((i+k,j))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0:
+                if self.current_board[i-k][j] == "":
+                    impactPos.append((i-k,j))
+                else:
+                    if self.current_board[i-k][j].find("white")==0:
+                        impactPos.append((i-k,j))
+                    break
+                k+=1
+            k = 1
+            while j - k >= 0:
+                if self.current_board[i][j-k] == "":
+                    impactPos.append((i,j-k))
+                else:
+                    if self.current_board[i][j-k].find("white")==0:
+                        impactPos.append((i,j-k))
+                    break
+                k+=1
+        
+        elif unitType == "black_knight":
+            moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
+            moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
+            for m in moves:
+                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                    impactPos.append((i+m[0],j+m[1]))
+
+        elif unitType == "black_bishop":
+            k = 1
+            while i + k < 8 and j + k <8:
+                if self.current_board[i+k][j+k] == "":
+                    impactPos.append((i+k,j+k))
+                else:
+                    if self.current_board[i+k][j+k].find("white")==0:
+                        impactPos.append((i+k,j+k))
+                    break
+                k+=1
+
+            k = 1
+            while i - k >= 0  and j + k <8:
+                if self.current_board[i-k][j+k] == "":
+                    impactPos.append((i-k,j+k))
+                else:
+                    if self.current_board[i-k][j+k].find("white")==0:
+                        impactPos.append((i-k,j+k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j - k >=0 :
+                if self.current_board[i+k][j-k] == "":
+                    impactPos.append((i+k,j-k))
+                else:
+                    if self.current_board[i+k][j-k].find("white")==0:
+                        impactPos.append((i+k,j-k))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0 and j - k >=0:
+                if self.current_board[i-k][j-k] == "":
+                    impactPos.append((i-k,j-k))
+                else:
+                    if self.current_board[i-k][j-k].find("white")==0:
+                        impactPos.append((i-k,j-k))
+                    break
+                k+=1    
+        elif unitType == "black_queen":
+            k = 1
+            while j + k < 8:
+                if self.current_board[i][j+k] == "":
+                    impactPos.append((i,j + k))
+                else:
+                    if self.current_board[i][j+k].find("white")==0:
+                        impactPos.append((i,j + k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8:
+                if self.current_board[i+k][j] == "":
+                    impactPos.append((i+k,j))
+                else:
+                    if self.current_board[i+k][j].find("white")==0:
+                        impactPos.append((i+k,j))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0:
+                if self.current_board[i-k][j] == "":
+                    impactPos.append((i-k,j))
+                else:
+                    if self.current_board[i-k][j].find("white")==0:
+                        impactPos.append((i-k,j))
+                    break
+                k+=1
+            k = 1
+            while j - k >= 0:
+                if self.current_board[i][j-k] == "":
+                    impactPos.append((i,j-k))
+                else:
+                    if self.current_board[i][j-k].find("white")==0:
+                        impactPos.append((i,j-k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j + k <8:
+                if self.current_board[i+k][j+k] == "":
+                    impactPos.append((i+k,j+k))
+                else:
+                    if self.current_board[i+k][j+k].find("white")==0:
+                        impactPos.append((i+k,j+k))
+                    break
+                k+=1
+
+            k = 1
+            while i - k >= 0  and j + k <8:
+                if self.current_board[i-k][j+k] == "":
+                    impactPos.append((i-k,j+k))
+                else:
+                    if self.current_board[i-k][j+k].find("white")==0:
+                        impactPos.append((i-k,j+k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j - k >=0 :
+                if self.current_board[i+k][j-k] == "":
+                    impactPos.append((i+k,j-k))
+                else:
+                    if self.current_board[i+k][j-k].find("white")==0:
+                        impactPos.append((i+k,j-k))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0 and j - k >=0:
+                if self.current_board[i-k][j-k] == "":
+                    impactPos.append((i-k,j-k))
+                else:
+                    if self.current_board[i-k][j-k].find("white")==0:
+                        impactPos.append((i-k,j-k))
+                    break
+                k+=1
+        elif unitType == "black_king":
+            moves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
+            # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
+            moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
+            for m in moves:
+                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                    impactPos.append((i+m[0],j+m[1]))
+                    
+        elif unitType =="white_pawn":
+            if i - 1 >= 0 and self.current_board[i-1][j] == "":
+                impactPos.append((i-1,j))
+                if i == 6 and i - 2 >=0 and self.current_board[i-2][j] == "":
+                    impactPos.append((i-2,j))
+            if i - 1 >= 0 and j + 1 < 8 and self.current_board[i-1][j+1].find("black") == 0:
+                    impactPos.append((i-1,j+1))
+            if i - 1 >= 0 and j - 1 >= 0 and self.current_board[i-1][j-1].find("black") == 0:
+                    impactPos.append((i-1,j-1))   
+        elif unitType == "white_rook":
+            k = 1
+            while j + k < 8:
+                if self.current_board[i][j+k] == "":
+                    impactPos.append((i,j + k))
+                else:
+                    if self.current_board[i][j+k].find("black")==0:
+                        impactPos.append((i,j + k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8:
+                if self.current_board[i+k][j] == "":
+                    impactPos.append((i+k,j))
+                else:
+                    if self.current_board[i+k][j].find("black")==0:
+                        impactPos.append((i+k,j))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0:
+                if self.current_board[i-k][j] == "":
+                    impactPos.append((i-k,j))
+                else:
+                    if self.current_board[i-k][j].find("black")==0:
+                        impactPos.append((i-k,j))
+                    break
+                k+=1
+            k = 1
+            while j - k >= 0:
+                if self.current_board[i][j-k] == "":
+                    impactPos.append((i,j-k))
+                else:
+                    if self.current_board[i][j-k].find("black")==0:
+                        impactPos.append((i,j-k))
+                    break
+                k+=1   
+        elif unitType =="white_knight":
+            moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
+            moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
+            for m in moves:
+                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                    impactPos.append((i+m[0],j+m[1]))    
+
+        elif unitType == "white_bishop":
+            k = 1
+            while i + k < 8 and j + k <8:
+                if self.current_board[i+k][j+k] == "":
+                    impactPos.append((i+k,j+k))
+                else:
+                    if self.current_board[i+k][j+k].find("black")==0:
+                        impactPos.append((i+k,j+k))
+                    break
+                k+=1
+
+            k = 1
+            while i - k >= 0  and j + k <8:
+                if self.current_board[i-k][j+k] == "":
+                    impactPos.append((i-k,j+k))
+                else:
+                    if self.current_board[i-k][j+k].find("black")==0:
+                        impactPos.append((i-k,j+k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j - k >=0 :
+                if self.current_board[i+k][j-k] == "":
+                    impactPos.append((i+k,j-k))
+                else:
+                    if self.current_board[i+k][j-k].find("black")==0:
+                        impactPos.append((i+k,j-k))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0 and j - k >=0:
+                if self.current_board[i-k][j-k] == "":
+                    impactPos.append((i-k,j-k))
+                else:
+                    if self.current_board[i-k][j-k].find("black")==0:
+                        impactPos.append((i-k,j-k))
+                    break
+                k+=1
+
+            
+        elif unitType == "white_queen":
+            k = 1
+            while j + k < 8:
+                if self.current_board[i][j+k] == "":
+                    impactPos.append((i,j + k))
+                else:
+                    if self.current_board[i][j+k].find("black")==0:
+                        impactPos.append((i,j + k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8:
+                if self.current_board[i+k][j] == "":
+                    impactPos.append((i+k,j))
+                else:
+                    if self.current_board[i+k][j].find("black")==0:
+                        impactPos.append((i+k,j))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0:
+                if self.current_board[i-k][j] == "":
+                    impactPos.append((i-k,j))
+                else:
+                    if self.current_board[i-k][j].find("black")==0:
+                        impactPos.append((i-k,j))
+                    break
+                k+=1
+            k = 1
+            while j - k >= 0:
+                if self.current_board[i][j-k] == "":
+                    impactPos.append((i,j-k))
+                else:
+                    if self.current_board[i][j-k].find("black")==0:
+                        impactPos.append((i,j-k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j + k <8:
+                if self.current_board[i+k][j+k] == "":
+                    impactPos.append((i+k,j+k))
+                else:
+                    if self.current_board[i+k][j+k].find("black")==0:
+                        impactPos.append((i+k,j+k))
+                    break
+                k+=1
+
+            k = 1
+            while i - k >= 0  and j + k <8:
+                if self.current_board[i-k][j+k] == "":
+                    impactPos.append((i-k,j+k))
+                else:
+                    if self.current_board[i-k][j+k].find("black")==0:
+                        impactPos.append((i-k,j+k))
+                    break
+                k+=1
+            k = 1
+            while i + k < 8 and j - k >=0 :
+                if self.current_board[i+k][j-k] == "":
+                    impactPos.append((i+k,j-k))
+                else:
+                    if self.current_board[i+k][j-k].find("black")==0:
+                        impactPos.append((i+k,j-k))
+                    break
+                k+=1
+            k = 1
+            while i - k >= 0 and j - k >=0:
+                if self.current_board[i-k][j-k] == "":
+                    impactPos.append((i-k,j-k))
+                else:
+                    if self.current_board[i-k][j-k].find("black")==0:
+                        impactPos.append((i-k,j-k))
+                    break
+                k+=1   
+
+        elif unitType =="white_king":
+            moves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
+            # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
+            moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
+            for m in moves:
+                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                    impactPos.append((i+m[0],j+m[1]))    
+                    
+        return impactPos
+        
+    def read_move(self,move:Move):
+      # position, newPos, unitType, special_move = "", promoted = "" 
+        
+        oldPosX = move.position[1]*self.size + self.size / 2
+        oldPosY = move.position[0]*self.size+ self.size / 2
+        newPosX = move.new_pos[1]*self.size+ self.size / 2
+        newPosY = move.new_pos[0]*self.size+ self.size / 2
+
+        oldX = move.position[1]
+        oldY = move.position[0]
+        newX = move.new_pos[1]
+        newY = move.new_pos[0]
+
+        overlapping = self.canvas.find_overlapping(oldPosX, oldPosY, oldPosX, oldPosY)
+        moves = self.impact_pos(move.unit_type,(oldY,oldX))
+        print(f"{move.unit_type} {moves}")
+        if (newY,newX) not in moves:
+            print("error")
+            return
+        else:
+            self.previous_board.insert(0,copy.deepcopy(self.current_board))
+
+            a,b = oldPosX,oldPosY
+            x,y = newPosX,newPosY
+            r = int((b)//self.size)
+            c= int((a)//self.size)
+            
+            square_size = self.size
+            #col * self.size + self.size/2, row * self.size + self.size/2,
+            row = int((y) // square_size)
+            col = int((x) // square_size)
+
+            # if self.curr
+            new_x = col * square_size + square_size / 2
+            new_y = row * square_size + square_size / 2
+            # overlapping = self.canvas.find_overlapping(x, y, x, y)
+            # print(overlapping[-1])
+            
+            self.canvas.coords(overlapping[-1], new_x , new_y)
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+        
+            if move.unit_type.find("white")==0:
+                self.type = 0 
+            else: self.type =1
+            if (len(overlapping) ==3):
+                if self.type ==0:
+                    self.canvas.delete(overlapping[1])
+                else: self.canvas.delete(overlapping[2])
+            self.drag_data["piece"] = None
+            # position, newPos, unitType, special_move = "", promoted = ""
+            overlapping = self.canvas.find_overlapping(x, y, x, y)
+            tags = self.canvas.gettags(overlapping[-1])             
+            self.move_log.append(Move((r,c),(row,col),tags[0]))
+            for ele in self.move_log:
+                print(ele)
+            self.previous_board.insert(0,copy.deepcopy(self.current_board))
+            self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]] = ""
+            self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = move.unit_type
+            if self.move_log[-1].special_move == "promote":
+                self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
 
         
-
-
-
-
-            
-
-                    
-           
-            
-
-                    
-
-
+        
 
 
 if __name__ == "__main__":
@@ -760,4 +1227,9 @@ if __name__ == "__main__":
     print(app.get_all_impact())
     for i in app.get_all_possible_moves("black"):
         print(i)
+    app.read_move(Move((1,0),(3,0),"black_pawn"))
+    app.read_move(Move((3,0),(4,0),"black_pawn"))
+    app.read_move(Move((4,0),(5,0),"black_pawn"))
+    app.read_move(Move((5,0),(6,1),"black_pawn"))
+    app.read_move(Move((7,2),(6,1),"white_bishop"))
     app.mainloop()
