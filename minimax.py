@@ -98,15 +98,15 @@ class Minimax:
         value = 0
         
         if piece_type == 'pawn':
-            value = 1
+            value = 10
         elif piece_type == 'knight' or piece_type == 'bishop':
-            value = 3
+            value = 30
         elif piece_type == 'rook':
-            value = 5
+            value = 50
         elif piece_type == 'queen':
-            value = 9
+            value = 90
         elif piece_type == 'king':
-            value = 100
+            value = 1000
     
         if piece_color == 'black':
             value = -value
@@ -197,6 +197,7 @@ class Minimax:
         best_eval = float('-inf') if is_maximizing_player else float('inf')
         alpha = float('-inf')
         beta = float('inf')
+        number_possible_moves = len(self.board.get_all_possible_moves('white')) if is_maximizing_player else len(self.board.get_all_possible_moves('black'))
         
         if is_maximizing_player:
             for move in self.board.get_all_possible_moves('white'):
@@ -215,7 +216,7 @@ class Minimax:
                     best_eval = eval
                     best_move = move
         
-        return best_move
+        return best_move, number_possible_moves
     
     def get_best_move_for_white(self):
         return self.get_best_move(True)
@@ -232,13 +233,12 @@ if __name__ == '__main__':
     minimax = Minimax(3, board)
     
     for i in range(20):
-        white_move = minimax.get_best_move_for_white()
+        white_move, total_white_move = minimax.get_best_move_for_white()
         board.make_move(white_move)
-        print(white_move)
-        black_move = minimax.get_best_move_for_black()
+        print(i, white_move, total_white_move)
+        black_move, total_black_move = minimax.get_best_move_for_black()
         board.make_move(black_move)
-        print(black_move)
-        print(board.get_board()[0])
+        print(i, black_move, total_black_move)
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss
 
