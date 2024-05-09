@@ -651,7 +651,7 @@ class ChessBoard(tk.Tk):
                             break
                         k+=1
                     
-                elif self.current_board[i][j].find("queen") >= 0:
+                elif self.current_board[i][j].find("queen") >= 0 and self.current_board[i][j].find(player) >= 0:
                     side = 0
                     if player == "white":
                         side = 1
