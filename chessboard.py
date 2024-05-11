@@ -788,20 +788,21 @@ class ChessBoard(tk.Tk):
         side = 0
         if player == "white":
             side = 1
-        for mv in movesList:
-            temp_board = copy.deepcopy(self.current_board)
-            unit = temp_board[mv.position[0]][mv.position[1]]
-            temp_board[mv.position[0]][mv.position[1]] = ""
-            temp_board[mv.new_pos[0]][mv.new_pos[1]] = unit
-            if mv.special_move == "promote":
-                temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
-            newImpact = self.get_all_impact(temp_board)
-            if mv.unit_type.find("king")>=0:
-                if mv.new_pos in newImpact[(side + 1)%2]:
-                    movesList.remove(mv)
-            else:
-                if kingPos in newImpact[(side+1)%2]:
-                    movesList.remove(mv)
+        if kingPos in impactPos[(side + 1)%2]:
+            for mv in movesList:
+                temp_board = copy.deepcopy(self.current_board)
+                unit = temp_board[mv.position[0]][mv.position[1]]
+                temp_board[mv.position[0]][mv.position[1]] = ""
+                temp_board[mv.new_pos[0]][mv.new_pos[1]] = unit
+                if mv.special_move == "promote":
+                    temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
+                newImpact = self.get_all_impact(temp_board)
+                if mv.unit_type.find("king")>=0:
+                    if mv.new_pos in newImpact[(side + 1)%2]:
+                        movesList.remove(mv)
+                else:
+                    if kingPos in newImpact[(side+1)%2]:
+                        movesList.remove(mv)
 
         return movesList
     def make_move(self,move: Move):
