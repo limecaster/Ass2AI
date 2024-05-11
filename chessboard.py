@@ -791,7 +791,7 @@ class ChessBoard(tk.Tk):
         if kingPos in impactPos[(side + 1)%2]:
             for mv in movesList:
                 temp_board = copy.deepcopy(self.current_board)
-                unit = temp_board[mv.position[0]][mv.position[1]]
+                unit = mv.unit_type
                 temp_board[mv.position[0]][mv.position[1]] = ""
                 temp_board[mv.new_pos[0]][mv.new_pos[1]] = unit
                 if mv.special_move == "promote":
