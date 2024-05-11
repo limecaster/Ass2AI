@@ -100,7 +100,7 @@ class ChessBoard(tk.Tk):
             self.current_board = starting_board
         for row in range(self.rows):
             for col in range(self.columns):
-                piece = starting_board[row][col]
+                piece = self.current_board[row][col]
                 if piece != '':
                     piece_image = self.piece_images[piece]
                     self.canvas.create_image(col * self.size + self.size/2, row * self.size + self.size/2,
@@ -1244,12 +1244,17 @@ class ChessBoard(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = ChessBoard()
+    game = [
+        ['black_rook', '', '', '', 'black_king', '', '', 'black_rook'],
+        ['black_pawn', 'black_pawn', 'black_pawn', '', '', 'black_pawn','black_pawn', 'black_pawn'],
+        ['', '', '', '', 'black_pawn', 'black_knight', '', ''],
+        ['', 'black_knight', '', 'black_pawn', '', 'black_bishop', '', ''],
+        ['', '', '', '', '', 'white_pawn', 'white_pawn', ''], 
+        ['', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],
+        ['white_pawn', '', '', 'white_king', 'white_pawn', '', '', 'white_rook'],
+        ['white_rook', '', '', '', '', 'white_bishop', 'white_knight', '']
+        ]
+    app = ChessBoard(game, 'white')
     for i in app.get_all_possible_moves("white"):
         print(i)
-    app.read_move(Move((1,0),(3,0),"black_pawn"))
-    app.read_move(Move((3,0),(4,0),"black_pawn"))
-    app.read_move(Move((4,0),(5,0),"black_pawn"))
-    app.read_move(Move((5,0),(6,1),"black_pawn"))
-    app.read_move(Move((7,2),(6,1),"white_bishop"))
     app.mainloop()
