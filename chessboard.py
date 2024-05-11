@@ -232,358 +232,358 @@ class ChessBoard(tk.Tk):
         return None
     def get_board(self):
         return (copy.deepcopy(self.current_board),self.blackCastled, self.whiteCastled)
-    def get_all_impact(self):
+    def get_all_impact(self, board):
         impactPos = ([],[]) #[0] is for black, [1] is for white (not racist)
         for i in range(8):
             for j in range(8):
-                if self.current_board[i][j].find("black_pawn") == 0:
-                    if i + 1 < 8 and self.current_board[i+1][j] == "":
+                if board[i][j].find("black_pawn") == 0:
+                    if i + 1 < 8 and board[i+1][j] == "":
                         impactPos[0].append((i+1,j))
-                        if i == 1 and i + 2 < 8 and self.current_board[i+2][j] == "":
+                        if i == 1 and i + 2 < 8 and board[i+2][j] == "":
                             impactPos[0].append((i+2,j))
-                    if i + 1 < 8 and j + 1 < 8 and self.current_board[i+1][j+1].find("white") == 0:
+                    if i + 1 < 8 and j + 1 < 8 and board[i+1][j+1].find("white") == 0:
                             impactPos[0].append((i+1,j+1))
-                    if i + 1 < 8 and j - 1 >= 0 and self.current_board[i+1][j-1].find("white") == 0:
+                    if i + 1 < 8 and j - 1 >= 0 and board[i+1][j-1].find("white") == 0:
                             impactPos[0].append((i+1,j-1))
                         
 
-                elif self.current_board[i][j].find("black_rook") == 0:
+                elif board[i][j].find("black_rook") == 0:
                     k = 1
                     while j + k < 8:
-                        if self.current_board[i][j+k] == "":
+                        if board[i][j+k] == "":
                             impactPos[0].append((i,j + k))
                         else:
-                            if self.current_board[i][j+k].find("white")==0:
+                            if board[i][j+k].find("white")==0:
                                 impactPos[0].append((i,j + k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8:
-                        if self.current_board[i+k][j] == "":
+                        if board[i+k][j] == "":
                             impactPos[0].append((i+k,j))
                         else:
-                            if self.current_board[i+k][j].find("white")==0:
+                            if board[i+k][j].find("white")==0:
                                 impactPos[0].append((i+k,j))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0:
-                        if self.current_board[i-k][j] == "":
+                        if board[i-k][j] == "":
                             impactPos[0].append((i-k,j))
                         else:
-                            if self.current_board[i-k][j].find("white")==0:
+                            if board[i-k][j].find("white")==0:
                                 impactPos[0].append((i-k,j))
                             break
                         k+=1
                     k = 1
                     while j - k >= 0:
-                        if self.current_board[i][j-k] == "":
+                        if board[i][j-k] == "":
                             impactPos[0].append((i,j-k))
                         else:
-                            if self.current_board[i][j-k].find("white")==0:
+                            if board[i][j-k].find("white")==0:
                                 impactPos[0].append((i,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("black_knight") == 0:
+                elif board[i][j].find("black_knight") == 0:
                     moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
                     moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
                     for m in moves:
-                        if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                        if board[i + m[0]][j + m[1]] == "" or board[i + m[0]][j + m[1]].find("white")==0:
                             impactPos[0].append((i+m[0],j+m[1]))
-                elif self.current_board[i][j].find("black_bishop") == 0:
+                elif board[i][j].find("black_bishop") == 0:
                     k = 1
                     while i + k < 8 and j + k <8:
-                        if self.current_board[i+k][j+k] == "":
+                        if board[i+k][j+k] == "":
                             impactPos[0].append((i+k,j+k))
                         else:
-                            if self.current_board[i+k][j+k].find("white")==0:
+                            if board[i+k][j+k].find("white")==0:
                                 impactPos[0].append((i+k,j+k))
                             break
                         k+=1
 
                     k = 1
                     while i - k >= 0  and j + k <8:
-                        if self.current_board[i-k][j+k] == "":
+                        if board[i-k][j+k] == "":
                             impactPos[0].append((i-k,j+k))
                         else:
-                            if self.current_board[i-k][j+k].find("white")==0:
+                            if board[i-k][j+k].find("white")==0:
                                 impactPos[0].append((i-k,j+k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j - k >=0 :
-                        if self.current_board[i+k][j-k] == "":
+                        if board[i+k][j-k] == "":
                             impactPos[0].append((i+k,j-k))
                         else:
-                            if self.current_board[i+k][j-k].find("white")==0:
+                            if board[i+k][j-k].find("white")==0:
                                 impactPos[0].append((i+k,j-k))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0 and j - k >=0:
-                        if self.current_board[i-k][j-k] == "":
+                        if board[i-k][j-k] == "":
                             impactPos[0].append((i-k,j-k))
                         else:
-                            if self.current_board[i-k][j-k].find("white")==0:
+                            if board[i-k][j-k].find("white")==0:
                                 impactPos[0].append((i-k,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("black_queen") == 0:
+                elif board[i][j].find("black_queen") == 0:
                     k = 1
                     while j + k < 8:
-                        if self.current_board[i][j+k] == "":
+                        if board[i][j+k] == "":
                             impactPos[0].append((i,j + k))
                         else:
-                            if self.current_board[i][j+k].find("white")==0:
+                            if board[i][j+k].find("white")==0:
                                 impactPos[0].append((i,j + k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8:
-                        if self.current_board[i+k][j] == "":
+                        if board[i+k][j] == "":
                             impactPos[0].append((i+k,j))
                         else:
-                            if self.current_board[i+k][j].find("white")==0:
+                            if board[i+k][j].find("white")==0:
                                 impactPos[0].append((i+k,j))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0:
-                        if self.current_board[i-k][j] == "":
+                        if board[i-k][j] == "":
                             impactPos[0].append((i-k,j))
                         else:
-                            if self.current_board[i-k][j].find("white")==0:
+                            if board[i-k][j].find("white")==0:
                                 impactPos[0].append((i-k,j))
                             break
                         k+=1
                     k = 1
                     while j - k >= 0:
-                        if self.current_board[i][j-k] == "":
+                        if board[i][j-k] == "":
                             impactPos[0].append((i,j-k))
                         else:
-                            if self.current_board[i][j-k].find("white")==0:
+                            if board[i][j-k].find("white")==0:
                                 impactPos[0].append((i,j-k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j + k <8:
-                        if self.current_board[i+k][j+k] == "":
+                        if board[i+k][j+k] == "":
                             impactPos[0].append((i+k,j+k))
                         else:
-                            if self.current_board[i+k][j+k].find("white")==0:
+                            if board[i+k][j+k].find("white")==0:
                                 impactPos[0].append((i+k,j+k))
                             break
                         k+=1
 
                     k = 1
                     while i - k >= 0  and j + k <8:
-                        if self.current_board[i-k][j+k] == "":
+                        if board[i-k][j+k] == "":
                             impactPos[0].append((i-k,j+k))
                         else:
-                            if self.current_board[i-k][j+k].find("white")==0:
+                            if board[i-k][j+k].find("white")==0:
                                 impactPos[0].append((i-k,j+k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j - k >=0 :
-                        if self.current_board[i+k][j-k] == "":
+                        if board[i+k][j-k] == "":
                             impactPos[0].append((i+k,j-k))
                         else:
-                            if self.current_board[i+k][j-k].find("white")==0:
+                            if board[i+k][j-k].find("white")==0:
                                 impactPos[0].append((i+k,j-k))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0 and j - k >=0:
-                        if self.current_board[i-k][j-k] == "":
+                        if board[i-k][j-k] == "":
                             impactPos[0].append((i-k,j-k))
                         else:
-                            if self.current_board[i-k][j-k].find("white")==0:
+                            if board[i-k][j-k].find("white")==0:
                                 impactPos[0].append((i-k,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("black_king") == 0:
+                elif board[i][j].find("black_king") == 0:
                     moves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
                     # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
                     moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
                     for m in moves:
-                        if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                        if board[i + m[0]][j + m[1]] == "" or board[i + m[0]][j + m[1]].find("white")==0:
                             impactPos[0].append((i+m[0],j+m[1]))
-                elif self.current_board[i][j].find("white_pawn") == 0:
-                    if i - 1 >= 0 and self.current_board[i-1][j] == "":
+                elif board[i][j].find("white_pawn") == 0:
+                    if i - 1 >= 0 and board[i-1][j] == "":
                         impactPos[1].append((i-1,j))
-                        if i == 6 and i - 2 >=0 and self.current_board[i-2][j] == "":
+                        if i == 6 and i - 2 >=0 and board[i-2][j] == "":
                             impactPos[1].append((i-2,j))
-                    if i - 1 >= 0 and j + 1 < 8 and self.current_board[i-1][j+1].find("black") == 0:
+                    if i - 1 >= 0 and j + 1 < 8 and board[i-1][j+1].find("black") == 0:
                             impactPos[1].append((i-1,j+1))
-                    if i - 1 >= 0 and j - 1 >= 0 and self.current_board[i-1][j-1].find("black") == 0:
+                    if i - 1 >= 0 and j - 1 >= 0 and board[i-1][j-1].find("black") == 0:
                             impactPos[1].append((i-1,j-1))
-                elif self.current_board[i][j].find("white_rook") == 0:
+                elif board[i][j].find("white_rook") == 0:
                     k = 1
                     while j + k < 8:
-                        if self.current_board[i][j+k] == "":
+                        if board[i][j+k] == "":
                             impactPos[1].append((i,j + k))
                         else:
-                            if self.current_board[i][j+k].find("black")==0:
+                            if board[i][j+k].find("black")==0:
                                 impactPos[1].append((i,j + k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8:
-                        if self.current_board[i+k][j] == "":
+                        if board[i+k][j] == "":
                             impactPos[1].append((i+k,j))
                         else:
-                            if self.current_board[i+k][j].find("black")==0:
+                            if board[i+k][j].find("black")==0:
                                 impactPos[1].append((i+k,j))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0:
-                        if self.current_board[i-k][j] == "":
+                        if board[i-k][j] == "":
                             impactPos[1].append((i-k,j))
                         else:
-                            if self.current_board[i-k][j].find("black")==0:
+                            if board[i-k][j].find("black")==0:
                                 impactPos[1].append((i-k,j))
                             break
                         k+=1
                     k = 1
                     while j - k >= 0:
-                        if self.current_board[i][j-k] == "":
+                        if board[i][j-k] == "":
                             impactPos[1].append((i,j-k))
                         else:
-                            if self.current_board[i][j-k].find("black")==0:
+                            if board[i][j-k].find("black")==0:
                                 impactPos[1].append((i,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("white_knight") == 0:
+                elif board[i][j].find("white_knight") == 0:
                     moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
                     moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
                     for m in moves:
-                        if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                        if board[i + m[0]][j + m[1]] == "" or board[i + m[0]][j + m[1]].find("black")==0:
                             impactPos[1].append((i+m[0],j+m[1]))
-                elif self.current_board[i][j].find("white_bishop") == 0:
+                elif board[i][j].find("white_bishop") == 0:
                     k = 1
                     while i + k < 8 and j + k <8:
-                        if self.current_board[i+k][j+k] == "":
+                        if board[i+k][j+k] == "":
                             impactPos[1].append((i+k,j+k))
                         else:
-                            if self.current_board[i+k][j+k].find("black")==0:
+                            if board[i+k][j+k].find("black")==0:
                                 impactPos[1].append((i+k,j+k))
                             break
                         k+=1
 
                     k = 1
                     while i - k >= 0  and j + k <8:
-                        if self.current_board[i-k][j+k] == "":
+                        if board[i-k][j+k] == "":
                             impactPos[1].append((i-k,j+k))
                         else:
-                            if self.current_board[i-k][j+k].find("black")==0:
+                            if board[i-k][j+k].find("black")==0:
                                 impactPos[1].append((i-k,j+k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j - k >=0 :
-                        if self.current_board[i+k][j-k] == "":
+                        if board[i+k][j-k] == "":
                             impactPos[1].append((i+k,j-k))
                         else:
-                            if self.current_board[i+k][j-k].find("black")==0:
+                            if board[i+k][j-k].find("black")==0:
                                 impactPos[1].append((i+k,j-k))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0 and j - k >=0:
-                        if self.current_board[i-k][j-k] == "":
+                        if board[i-k][j-k] == "":
                             impactPos[1].append((i-k,j-k))
                         else:
-                            if self.current_board[i-k][j-k].find("black")==0:
+                            if board[i-k][j-k].find("black")==0:
                                 impactPos[1].append((i-k,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("white_queen") == 0:
+                elif board[i][j].find("white_queen") == 0:
                     k = 1
                     while j + k < 8:
-                        if self.current_board[i][j+k] == "":
+                        if board[i][j+k] == "":
                             impactPos[1].append((i,j + k))
                         else:
-                            if self.current_board[i][j+k].find("black")==0:
+                            if board[i][j+k].find("black")==0:
                                 impactPos[1].append((i,j + k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8:
-                        if self.current_board[i+k][j] == "":
+                        if board[i+k][j] == "":
                             impactPos[1].append((i+k,j))
                         else:
-                            if self.current_board[i+k][j].find("black")==0:
+                            if board[i+k][j].find("black")==0:
                                 impactPos[1].append((i+k,j))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0:
-                        if self.current_board[i-k][j] == "":
+                        if board[i-k][j] == "":
                             impactPos[1].append((i-k,j))
                         else:
-                            if self.current_board[i-k][j].find("black")==0:
+                            if board[i-k][j].find("black")==0:
                                 impactPos[1].append((i-k,j))
                             break
                         k+=1
                     k = 1
                     while j - k >= 0:
-                        if self.current_board[i][j-k] == "":
+                        if board[i][j-k] == "":
                             impactPos[1].append((i,j-k))
                         else:
-                            if self.current_board[i][j-k].find("black")==0:
+                            if board[i][j-k].find("black")==0:
                                 impactPos[1].append((i,j-k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j + k <8:
-                        if self.current_board[i+k][j+k] == "":
+                        if board[i+k][j+k] == "":
                             impactPos[1].append((i+k,j+k))
                         else:
-                            if self.current_board[i+k][j+k].find("black")==0:
+                            if board[i+k][j+k].find("black")==0:
                                 impactPos[1].append((i+k,j+k))
                             break
                         k+=1
 
                     k = 1
                     while i - k >= 0  and j + k <8:
-                        if self.current_board[i-k][j+k] == "":
+                        if board[i-k][j+k] == "":
                             impactPos[1].append((i-k,j+k))
                         else:
-                            if self.current_board[i-k][j+k].find("black")==0:
+                            if board[i-k][j+k].find("black")==0:
                                 impactPos[1].append((i-k,j+k))
                             break
                         k+=1
                     k = 1
                     while i + k < 8 and j - k >=0 :
-                        if self.current_board[i+k][j-k] == "":
+                        if board[i+k][j-k] == "":
                             impactPos[1].append((i+k,j-k))
                         else:
-                            if self.current_board[i+k][j-k].find("black")==0:
+                            if board[i+k][j-k].find("black")==0:
                                 impactPos[1].append((i+k,j-k))
                             break
                         k+=1
                     k = 1
                     while i - k >= 0 and j - k >=0:
-                        if self.current_board[i-k][j-k] == "":
+                        if board[i-k][j-k] == "":
                             impactPos[1].append((i-k,j-k))
                         else:
-                            if self.current_board[i-k][j-k].find("black")==0:
+                            if board[i-k][j-k].find("black")==0:
                                 impactPos[1].append((i-k,j-k))
                             break
                         k+=1
-                elif self.current_board[i][j].find("white_king") == 0:
+                elif board[i][j].find("white_king") == 0:
                     moves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
                     # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
                     moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
                     for m in moves:
-                        if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                        if board[i + m[0]][j + m[1]] == "" or board[i + m[0]][j + m[1]].find("black")==0:
                             impactPos[0].append((i+m[0],j+m[1]))
         return impactPos
 
     def get_all_possible_moves(self,player: str = ['white', 'black']):
-        impactPos = self.get_all_impact() #[0] is for black, [1] is for white (not racist)
+        impactPos = self.get_all_impact(copy.deepcopy(self.current_board)) #[0] is for black, [1] is for white (not racist)
         movesList = []
         for i in range(8):
             for j in range(8):
@@ -1224,7 +1224,6 @@ class ChessBoard(tk.Tk):
 
 if __name__ == "__main__":
     app = ChessBoard()
-    print(app.get_all_impact())
     for i in app.get_all_possible_moves("white"):
         print(i)
     app.read_move(Move((1,0),(3,0),"black_pawn"))
