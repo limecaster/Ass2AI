@@ -548,12 +548,12 @@ class ChessBoard(tk.Tk):
 
                         
                     elif player == 'white':
-                        if (i-direction[0],j-direction[1]) in impactPos[0] and self.current_board[i-direction[0]][j-direction[1]]=="":
+                        if (i-direction[0],j-direction[1]) in impactPos[1] and self.current_board[i-direction[0]][j-direction[1]]=="":
                             mList.append(Move((i,j),(i-direction[0],j-direction[1]),self.current_board[i][j]))
-                            if (i-direction[0]*2,j-direction[1]) in impactPos[0] and self.current_board[i-direction[0]*2][j-direction[1]]=="" and i==6:
+                            if (i-direction[0]*2,j-direction[1]) in impactPos[1] and self.current_board[i-direction[0]*2][j-direction[1]]=="" and i==6:
                                 mList.append(Move((i,j),(i-direction[0]*2,j-direction[1]),self.current_board[i][j]))
                         for dir in attackDirections:
-                            if (i-dir[0],j-dir[1]) in impactPos[0] and self.current_board[i-dir[0]][j-dir[1]].find("black")>=0:
+                            if (i-dir[0],j-dir[1]) in impactPos[1] and self.current_board[i-dir[0]][j-dir[1]].find("black")>=0:
                                 mList.append(Move((i,j),(i-dir[0],j-dir[1]),self.current_board[i][j]))
                         for m in mList:
                             if m.new_pos[0] == 0:
@@ -758,6 +758,6 @@ class ChessBoard(tk.Tk):
 if __name__ == "__main__":
     app = ChessBoard()
     print(app.get_all_impact())
-    for i in app.get_all_possible_moves("black"):
+    for i in app.get_all_possible_moves("white"):
         print(i)
     app.mainloop()
