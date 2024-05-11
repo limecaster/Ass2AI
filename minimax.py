@@ -160,59 +160,42 @@ class Minimax:
     
     def _minimax(self, depth, chess_board, is_maximizing_player, alpha, beta):
         if depth == 0:
-            return self._evaluate_board(chess_board)
+            return 0 , self._evaluate_board(chess_board)
         
         if is_maximizing_player:
             max_eval = float('-inf')
+            best_move = None
             for move in self.board.get_all_possible_moves('white'):
                 self.board.make_move(move)
-                eval = self._minimax(depth - 1, self.board.get_board()[0], False, alpha, beta)
+                _ , eval = self._minimax(depth - 1, chess_board, False, alpha, beta)
                 self.board.undo_move()
-                max_eval = max(max_eval, eval)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-            return max_eval
+            return best_move, max_eval
         else:
             min_eval = float('inf')
+            best_move = None
             for move in self.board.get_all_possible_moves('black'):
                 self.board.make_move(move)
-                eval = self._minimax(depth - 1, self.board.get_board()[0], True, alpha, beta)
+                _ , eval = self._minimax(depth - 1, chess_board, True, alpha, beta)
                 self.board.undo_move()
-                min_eval = min(min_eval, eval)
+                if eval < min_eval:
+                    min_eval = eval
+                    best_move = move
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-            return min_eval
+            return best_move, min_eval
         
     def get_best_move(self, is_maximizing_player: bool):
         """Returns the best move for the player with the given color.
         is_maximizing_player: True if the player is white, False if the player is black.
         """
-        best_move = None
-        best_eval = float('-inf') if is_maximizing_player else float('inf')
-        alpha = float('-inf')
-        beta = float('inf')
-        number_possible_moves = len(self.board.get_all_possible_moves('white')) if is_maximizing_player else len(self.board.get_all_possible_moves('black'))
-        print(f'Number of Possible moves for {"white" if is_maximizing_player else "black"}: {number_possible_moves}')
-        if is_maximizing_player:
-            for move in self.board.get_all_possible_moves('white'):
-                self.board.make_move(move)
-                eval = self._minimax(self.depth - 1, self.board.get_board()[0], False, alpha, beta)
-                self.board.undo_move()
-                if eval > best_eval:
-                    best_eval = eval
-                    best_move = move
-        else:
-            for move in self.board.get_all_possible_moves('black'):
-                self.board.make_move(move)
-                eval = self._minimax(self.depth - 1, self.board.get_board()[0], True, alpha, beta)
-                self.board.undo_move()
-                if eval < best_eval:
-                    best_eval = eval
-                    best_move = move
-        
-        return best_move, number_possible_moves
+        return self._minimax(self.depth, self.board.get_board()[0], is_maximizing_player, float('-inf'), float('inf'))
     
     def get_best_move_for_white(self):
         return self.get_best_move(True)
@@ -230,17 +213,17 @@ if __name__ == '__main__':
     
     for i in range(20):
         white_calculation_start = time.time()
-        white_move, total_white_move = minimax.get_best_move_for_white()
+        white_move, white_eval = minimax.get_best_move_for_white()
         white_calculation_end = time.time()
         board.make_move(white_move)
-        print(i, white_move, total_white_move)
+        print(i, white_move, white_eval)
         print(f'White move calculation time: {white_calculation_end - white_calculation_start} seconds')
         
         black_calculation_start = time.time()
-        black_move, total_black_move = minimax.get_best_move_for_black()
+        black_move, black_eval = minimax.get_best_move_for_black()
         black_calculation_end = time.time()
         board.make_move(black_move)
-        print(i, black_move, total_black_move)
+        print(i, black_move, black_eval)
         print(f'Black move calculation time: {black_calculation_end - black_calculation_start} seconds')
         
     end_time = time.time()
