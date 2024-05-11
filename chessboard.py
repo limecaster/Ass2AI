@@ -585,6 +585,7 @@ class ChessBoard(tk.Tk):
     def get_all_possible_moves(self,player: str = ['white', 'black']):
         impactPos = self.get_all_impact(copy.deepcopy(self.current_board)) #[0] is for black, [1] is for white (not racist)
         movesList = []
+        kingPos = (-1,-1)
         for i in range(8):
             for j in range(8):
                 if self.current_board[i][j].find("pawn") >= 0 and self.current_board[i][j].find(player) >= 0:
@@ -776,6 +777,7 @@ class ChessBoard(tk.Tk):
                             break
                         k+=1
                 elif self.current_board[i][j].find("king") >= 0 and self.current_board[i][j].find(player) >= 0:
+                    kingPos = (i,j)
                     side = 0
                     if player == "white":
                         side = 1
@@ -783,6 +785,26 @@ class ChessBoard(tk.Tk):
                     for m in moves:
                         if (i + m[0], j + m[1]) in impactPos[side]:
                             movesList.append(Move((i,j),(i+m[0],j+m[1]),self.current_board[i][j]))
+        side = 0
+        if player == "white":
+            side = 1
+        if kingPos in impactPos[(side + 1)%2]:
+            legalMoves = []
+            for mv in movesList:
+                temp_board = copy.deepcopy(self.current_board)
+                unit = temp_board[mv.position[0]][mv.position[1]]
+                temp_board[mv.position[0]][mv.position[1]] = ""
+                temp_board[mv.new_pos[0]][mv.new_pos[1]] = unit
+                if mv.special_move == "promote":
+                    temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
+                newImpact = self.get_all_impact(temp_board)
+                if mv.unit_type.find("king")>=0:
+                    if mv.new_pos in newImpact[(side + 1)%2]:
+                        movesList.remove(mv)
+                else:
+                    if kingPos in newImpact[(side+1)%2]:
+                        movesList.remove(mv)
+
         return movesList
     def make_move(self,move: Move):
         self.previous_board.insert(0,copy.deepcopy(self.current_board))
