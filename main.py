@@ -18,7 +18,8 @@ if __name__ == '__main__':
         ['white_pawn', '', '', 'white_king', 'white_pawn', '', '', 'white_rook'],
         ['white_rook', '', '', '', '', 'white_bishop', 'white_knight', '']
         ]
-    board = ChessBoard(game, 'white')    
+    board = ChessBoard(game, 'white')
+    #print(board.get_all_possible_moves("white"))
     agent = Agent(board, 'white')
     minimax = Minimax(3, board)
     for i in range(20):
@@ -34,3 +35,5 @@ if __name__ == '__main__':
 
     execution_time = end_time - start_time
     memory_consumption = end_memory - start_memory
+
+    
