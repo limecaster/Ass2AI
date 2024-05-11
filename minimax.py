@@ -16,8 +16,8 @@ class Minimax:
         [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
         [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
         [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
-        [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
-        [0.5,  1.0,  1.0, -2.0, -2.0,  1.0,  1.0,  0.5],
+        [0.5,  0.5,  1.0,  0.0,  0.0,  1.0,  0.5,  0.5],
+        [0.5,  1.0,  0.5, -1.0, -1.0,  0.5,  1.0,  0.5],
         [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
     ]
         # Reverse the board to get the black pawn value by position
@@ -58,7 +58,7 @@ class Minimax:
         # If the rook is on d1 or e1, it is worth more cause it was already developed, and it can control the center
         self.__white_rook_value_by_position = [
         [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
-        [ 0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+        [ 1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0],
         [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
         [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
         [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
@@ -94,64 +94,60 @@ class Minimax:
         self.__black_king_value_by_position = self.__white_king_value_by_position[::-1]
         
     def _get_piece_value_by_type(self, piece):
-        piece_color, piece_type = piece.split('_')
-        value = 0
+        _, piece_type = piece.split('_')
         
         if piece_type == 'pawn':
-            value = 10
+            return 10
         elif piece_type == 'knight' or piece_type == 'bishop':
-            value = 30
+            return 30
         elif piece_type == 'rook':
-            value = 50
+            return 50
         elif piece_type == 'queen':
-            value = 90
+            return 90
         elif piece_type == 'king':
-            value = 1000
-    
-        if piece_color == 'black':
-            value = -value
+            return 1000
             
-        return value
 
     def _get_piece_value_by_position(self, piece, row, col):
         piece_color, piece_type = piece.split('_')
-        value = 0
+        
         
         if piece_type == 'pawn':
             if piece_color == 'white':
-                value = self.__white_pawn_value_by_position[row][col]
+                return self.__white_pawn_value_by_position[col][row]
             else:
-                value = self.__black_pawn_value_by_position[row][col]
+                return self.__black_pawn_value_by_position[col][row]
         elif piece_type == 'knight':
             if piece_color == 'white':
-                value = self.__white_knight_value_by_position[row][col]
+                return self.__white_knight_value_by_position[col][row]
             else:
-                value = self.__black_knight_value_by_position[row][col]
+                return self.__black_knight_value_by_position[col][row]
         elif piece_type == 'bishop':
             if piece_color == 'white':
-                value = self.__white_bishop_value_by_position[row][col]
+                return self.__white_bishop_value_by_position[col][row]
             else:
-                value = self.__black_bishop_value_by_position[row][col]
+                return self.__black_bishop_value_by_position[col][row]
         elif piece_type == 'rook':
             if piece_color == 'white':
-                value = self.__white_rook_value_by_position[row][col]
+                return self.__white_rook_value_by_position[col][row]
             else:
-                value = self.__black_rook_value_by_position[row][col]
+                return self.__black_rook_value_by_position[col][row]
         elif piece_type == 'queen':
             if piece_color == 'white':
-                value = self.__white_queen_value_by_position[row][col]
+                return self.__white_queen_value_by_position[col][row]
             else:
-                value = self.__black_queen_value_by_position[row][col]
+                return self.__black_queen_value_by_position[col][row]
         elif piece_type == 'king':
             if piece_color == 'white':
-                value = self.__white_king_value_by_position[row][col]
+                return self.__white_king_value_by_position[col][row]
             else:
-                value = self.__black_king_value_by_position[row][col]
-        
-        return value
+                return self.__black_king_value_by_position[col][row]
+        return 0
 
     def _get_piece_value(self, piece, row, col):
-        return self._get_piece_value_by_type(piece) + self._get_piece_value_by_position(piece, row, col)
+        total_value = self._get_piece_value_by_type(piece) + self._get_piece_value_by_position(piece, row, col)
+        piece_color, _ = piece.split('_')
+        return total_value if piece_color == 'white' else -total_value
 
     def _evaluate_board(self, chess_board):
         total_score = 0
@@ -233,17 +229,25 @@ if __name__ == '__main__':
     minimax = Minimax(3, board)
     
     for i in range(20):
+        white_calculation_start = time.time()
         white_move, total_white_move = minimax.get_best_move_for_white()
+        white_calculation_end = time.time()
         board.make_move(white_move)
         print(i, white_move, total_white_move)
+        print(f'White move calculation time: {white_calculation_end - white_calculation_start} seconds')
+        
+        black_calculation_start = time.time()
         black_move, total_black_move = minimax.get_best_move_for_black()
+        black_calculation_end = time.time()
         board.make_move(black_move)
         print(i, black_move, total_black_move)
+        print(f'Black move calculation time: {black_calculation_end - black_calculation_start} seconds')
+        
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss
 
     execution_time = end_time - start_time
-    memory_consumption = end_memory - start_memory
+    memory_consumption = (end_memory - start_memory) / 1024 / 1024
 
     print(f"Execution time: {execution_time} seconds")
-    print(f"Memory consumption: {memory_consumption} bytes")
+    print(f"Memory consumption: {memory_consumption} MB")
