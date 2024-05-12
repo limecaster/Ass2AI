@@ -14,6 +14,7 @@ class Move():
             self.side = 'white'
         self.special_move = special_move
         self.promoted = promoted
+        self.last_move = None
     def __str__(self) -> str:
         return self.unit_type + ': ' +str(self.position) + "->" +  str(self.new_pos) + " - " + self.special_move + " - " + self.promoted
 class ChessBoard(tk.Tk):
@@ -827,10 +828,26 @@ class ChessBoard(tk.Tk):
         else:
             return movesList
     def boardDisplay(self):
+        square_size = 64
+
         self.canvas.delete("all")
         self.draw_board()
-        self.draw_pieces()
+        if self.last_move is not None:
+            
+            x1 = (self.last_move.position[1]) * square_size
+            y1 = (self.last_move.position[0]) * square_size
+            x2 = x1 + square_size
+            y2 = y1 + square_size
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill="red")
+            x1 = (self.last_move.new_pos[1]) * square_size
+            y1 = (self.last_move.new_pos[0]) * square_size
+            x2 = x1 + square_size
+            y2 = y1 + square_size
+                
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill="yellow")
+            self.draw_pieces()
     def make_move(self,move: Move):
+        self.last_move = move
         self.previous_board.insert(0,copy.deepcopy(self.current_board))
         unit = self.current_board[move.position[0]][move.position[1]]
         self.current_board[move.position[0]][move.position[1]] = ""
@@ -843,7 +860,7 @@ class ChessBoard(tk.Tk):
             return
         self.current_board = copy.deepcopy(self.previous_board[0])
         self.previous_board.pop(0)
-        
+    
     def impact_pos(self,unitType,pos):
         impactPos = [] 
         i,j = pos

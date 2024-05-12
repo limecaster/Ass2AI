@@ -29,6 +29,8 @@ class thread(threading.Thread):
         minimax = Minimax(3, board)
         count = 1
         while not board.is_game_over():
+            time.sleep(1)
+
             agent_move = agent.get_random_move()
             if agent_move is None:
                 print("Game over! White has no more moves.")
@@ -38,7 +40,6 @@ class thread(threading.Thread):
         
             #[print(move) for move in board.get_all_possible_moves('black')]
             board.boardDisplay()
-            time.sleep(3)
             minimax_move = minimax.get_best_move_for_black()
             print(f"Move {count}: Black moves {minimax_move}")
             if minimax_move is None:
