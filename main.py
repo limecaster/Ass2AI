@@ -29,7 +29,7 @@ if __name__ == '__main__':
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    board = ChessBoard(check_board, 'white')
+    board = ChessBoard()
 
     agent = Agent(board, 'white')
     minimax = Minimax(3, board)
