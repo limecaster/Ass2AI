@@ -48,6 +48,10 @@ class ChessBoard(tk.Tk):
         self.oldPosY = None
         self.type = None
         self.impactPos = None
+        
+        # Win/lose/draw
+        self.is_checkmated = None # None, 'white', 'black'
+        self.is_stalemated = None # None, 'white', 'black'
 
     def draw_board(self):
         color = ["#EBECD0", "#739552"]
@@ -789,7 +793,7 @@ class ChessBoard(tk.Tk):
         if player == "white":
             side = 1
         #print(kingPos)
-        print(impactPos[1])
+        #print(impactPos[1])
         if True:
             legalList = []
 
@@ -803,13 +807,14 @@ class ChessBoard(tk.Tk):
                 if mv.special_move == "promote":
                     temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
                 newImpact = self.get_all_impact(copy.deepcopy(temp_board))
+                
                 print(mv, mv.new_pos in newImpact[(side + 1)%2])
 
                 #print(newImpact)
                 if mv.unit_type.find("_king")>0:
                     #print(mv, mv.new_pos in newImpact[(side + 1)%2])
-                    print(temp_board[7][2])
-                    print(newImpact)
+                    #print(temp_board[7][2])
+                    #print(newImpact)
                     if mv.new_pos in newImpact[(side + 1)%2]:
                         continue
                 else:
@@ -1209,7 +1214,7 @@ class ChessBoard(tk.Tk):
 
         overlapping = self.canvas.find_overlapping(oldPosX, oldPosY, oldPosX, oldPosY)
         moves = self.impact_pos(move.unit_type,(oldY,oldX))
-        print(f"{move.unit_type} {moves}")
+        #print(f"{move.unit_type} {moves}")
         if (newY,newX) not in moves:
             print("error")
             return
@@ -1509,7 +1514,6 @@ class ChessBoard(tk.Tk):
        
     def isCheckMate(self,player:str=['white','black']):
         if not self.isCheck(None, player):
-            print("nngoo")
             return False
         moves = self.get_all_possible_moves(player)
         board = self.current_board
@@ -1521,17 +1525,48 @@ class ChessBoard(tk.Tk):
                 board[move.new_pos[0]][move.new_pos[1]] = move.promoted
             if not self.isCheck(board,player):
                 return False
-        
+        if player == "white":
+            self.is_checkmated = "white"
+        else:
+            self.is_checkmated = "black"
         return True
 
 
     def is_draw(self,player: str = ['white', 'black']):
         if player =="white":
             res = self.get_all_possible_moves("white")
-            return True if len(res) == 0 else False
+            if len(res) == 0:
+                self.is_stalemated = 'white'
+                return True
+            return False
         if player == "black":
             res = self.get_all_possible_moves("black")
-            return True if len(res) == 0 else False
+            if len(res) == 0:
+                self.is_stalemated = 'black'
+                return True
+            return False
+        
+    def is_game_over(self):
+        self.isCheckMate("white")
+        self.isCheckMate("black")
+        self.is_draw("white")
+        self.is_draw("black")
+        
+        if self.is_checkmated:
+            print(f"{self.is_checkmated} is checkmated")
+            return True
+        if self.is_stalemated:
+            print(f"{self.is_stalemated} is stalemated")
+            return True
+        return False
+    
+    def get_winner(self):
+        if self.is_checkmated == "white":
+            return "black"
+        if self.is_checkmated == "black":
+            return "white"
+        if self.is_stalemated:
+            return "draw"
 
 
 
