@@ -808,7 +808,7 @@ class ChessBoard(tk.Tk):
                     temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
                 newImpact = self.get_all_impact(copy.deepcopy(temp_board))
                 
-                print(mv, mv.new_pos in newImpact[(side + 1)%2])
+                #print(mv, mv.new_pos in newImpact[(side + 1)%2])
 
                 #print(newImpact)
                 if mv.unit_type.find("_king")>0:

@@ -219,6 +219,7 @@ if __name__ == '__main__':
         print(i, white_move, white_eval)
         print(f'White move calculation time: {white_calculation_end - white_calculation_start} seconds')
         
+        [print(move) for move in board.get_all_possible_moves('black')]
         black_calculation_start = time.time()
         black_move, black_eval = minimax.get_best_move_for_black()
         black_calculation_end = time.time()

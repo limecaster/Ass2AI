@@ -24,20 +24,19 @@ if __name__ == '__main__':
     minimax = Minimax(3, board)
     count = 1
     while not board.is_game_over():
-        minimax_move, total_minimax_move = minimax.get_best_move_for_black()
-        if minimax_move is None:
-            print("Game over! Black has no more moves.")
-            break
-        board.make_move(minimax_move)
-        print(f"Move {count}: Black moves {minimax_move}")
-        
-        
         agent_move = agent.get_random_move()
         if agent_move is None:
             print("Game over! White has no more moves.")
             break
         board.make_move(agent_move)     
         print(f"Move {count}: White moves {agent_move}")
+        
+        minimax_move, total_minimax_move = minimax.get_best_move_for_black()
+        if minimax_move is None:
+            print("Game over! Black has no more moves.")
+            break
+        board.make_move(minimax_move)
+        print(f"Move {count}: Black moves {minimax_move}")
         
         count += 1
         
