@@ -159,7 +159,7 @@ class ChessBoard(tk.Tk):
         col = (event.x) // self.size
         if (row,col) not in self.impactPos:
             x = ((self.oldPosX)//self.size)*self.size + self.size / 2
-            y = ((self.oldPosY)//self.size)*self.size+ self.size / 2
+            y = ((self.oldPosY)//self.size)*self.size + self.size / 2
             self.canvas.coords(self.drag_data["piece"], x,y)
             return 
         
@@ -640,6 +640,8 @@ class ChessBoard(tk.Tk):
                     while j + k < 8:
                         if (i,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i,j+k),self.current_board[i][j]))
+                            if self.current_board[i][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -647,6 +649,8 @@ class ChessBoard(tk.Tk):
                     while j - k >= 0:
                         if (i,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i,j-k),self.current_board[i][j]))
+                            if self.current_board[i][j-k] != "":
+                                break 
                         else:
                             break
                         k+=1
@@ -654,6 +658,8 @@ class ChessBoard(tk.Tk):
                     while i + k < 8:
                         if (i+k,j) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j),self.current_board[i][j]))
+                            if self.current_board[i+k][j] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -661,6 +667,8 @@ class ChessBoard(tk.Tk):
                     while i - k >= 0:
                         if (i - k,j) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j),self.current_board[i][j]))
+                            if self.current_board[i-k][j] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -696,6 +704,8 @@ class ChessBoard(tk.Tk):
                     while i + k < 8 and j + k <8:
                         if (i+k,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j+k),self.current_board[i][j]))
+                            if self.current_board[i+k][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -703,6 +713,8 @@ class ChessBoard(tk.Tk):
                     while i - k >= 0 and j + k <8:
                         if (i-k,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j+k),self.current_board[i][j]))
+                            if self.current_board[i-k][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -710,6 +722,8 @@ class ChessBoard(tk.Tk):
                     while i + k < 8 and j - k >= 0:
                         if (i+k,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j-k),self.current_board[i][j]))
+                            if self.current_board[i+k][j-k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -717,6 +731,8 @@ class ChessBoard(tk.Tk):
                     while i - k >=0 and j - k >= 0:
                         if (i-k,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j-k),self.current_board[i][j]))
+                            if self.current_board[i-k][j-k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -725,10 +741,11 @@ class ChessBoard(tk.Tk):
                     side = 0
                     if player == "white":
                         side = 1
-                    k = 1
                     while j + k < 8:
                         if (i,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i,j+k),self.current_board[i][j]))
+                            if self.current_board[i][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -736,6 +753,8 @@ class ChessBoard(tk.Tk):
                     while j - k >= 0:
                         if (i,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i,j-k),self.current_board[i][j]))
+                            if self.current_board[i][j-k] != "":
+                                break 
                         else:
                             break
                         k+=1
@@ -743,13 +762,17 @@ class ChessBoard(tk.Tk):
                     while i + k < 8:
                         if (i+k,j) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j),self.current_board[i][j]))
+                            if self.current_board[i+k][j] != "":
+                                break
                         else:
                             break
                         k+=1
                     k = 1
-                    while i - k >=0:
-                        if (i+k,j) in impactPos[side]:
+                    while i - k >= 0:
+                        if (i - k,j) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j),self.current_board[i][j]))
+                            if self.current_board[i-k][j] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -757,6 +780,8 @@ class ChessBoard(tk.Tk):
                     while i + k < 8 and j + k <8:
                         if (i+k,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j+k),self.current_board[i][j]))
+                            if self.current_board[i+k][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -764,6 +789,8 @@ class ChessBoard(tk.Tk):
                     while i - k >= 0 and j + k <8:
                         if (i-k,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j+k),self.current_board[i][j]))
+                            if self.current_board[i-k][j+k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -771,6 +798,8 @@ class ChessBoard(tk.Tk):
                     while i + k < 8 and j - k >= 0:
                         if (i+k,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i+k,j-k),self.current_board[i][j]))
+                            if self.current_board[i+k][j-k] != "":
+                                break
                         else:
                             break
                         k+=1
@@ -778,6 +807,8 @@ class ChessBoard(tk.Tk):
                     while i - k >=0 and j - k >= 0:
                         if (i-k,j-k) in impactPos[side]:
                             movesList.append(Move((i,j),(i-k,j-k),self.current_board[i][j]))
+                            if self.current_board[i-k][j-k] != "":
+                                break
                         else:
                             break
                         k+=1
