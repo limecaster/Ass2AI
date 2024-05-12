@@ -1521,8 +1521,9 @@ class ChessBoard(tk.Tk):
         if not self.isCheck(None, player):
             return False
         moves = self.get_all_possible_moves(player)
-        board = copy.deepcopy(self.current_board)
         for move in moves:
+            board = copy.deepcopy(self.current_board)
+
             unit = board[move.position[0]][move.position[1]]
             board[move.position[0]][move.position[1]] = ""
             board[move.new_pos[0]][move.new_pos[1]] = unit
