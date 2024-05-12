@@ -18,7 +18,7 @@ class Move():
     def __str__(self) -> str:
         return self.unit_type + ': ' +str(self.position) + "->" +  str(self.new_pos) + " - " + self.special_move + " - " + self.promoted
 class ChessBoard(tk.Tk):
-    def __init__(self, current_board=None, current_player='white', move_log=[]):
+    def __init__(self, current_board=None, current_player='white', move_log=[], playable = False):
         super().__init__()
         self.rows = 8
         self.columns = 8
@@ -43,6 +43,7 @@ class ChessBoard(tk.Tk):
         
         self.current_player = current_player
         self.move_log = move_log
+        self.playable = playable
 
         # tkinter
         self.oldPosX = None
@@ -112,6 +113,8 @@ class ChessBoard(tk.Tk):
                                              image=piece_image, tags=(piece, "piece"))
     
     def start_drag(self, event):
+        if not self.playable:
+            return
         x, y = event.x, event.y
         overlapping = self.canvas.find_overlapping(x, y, x, y)
         if overlapping:
@@ -144,7 +147,8 @@ class ChessBoard(tk.Tk):
             self.impactPos = moves
     
     def drag(self, event):
-        
+        if not self.playable:
+            return
         if self.drag_data["piece"]:
             dx = event.x - self.drag_data["x"]
             dy = event.y - self.drag_data["y"]
@@ -154,7 +158,8 @@ class ChessBoard(tk.Tk):
         
     
     def drop(self, event):
-
+        if not self.playable:
+            return
         row = (event.y) // self.size
         col = (event.x) // self.size
         if (row,col) not in self.impactPos:
