@@ -11,8 +11,12 @@ class Agent:
     
     def get_random_move(self):
         move_list = self.board.get_all_possible_moves(self.player)
+        print(self.board.current_board)
+        [print(mv) for mv in self.board.get_all_possible_moves(self.player)]
+
         #print(f'Number of Possible moves for {self.player}: {len(move_list)}')
         move = random.choice(move_list)
+        print(move)
         self.log_moves.append(move)
         return move
     

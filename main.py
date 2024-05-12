@@ -9,14 +9,14 @@ if __name__ == '__main__':
     start_time = time.time()
     start_memory = psutil.Process().memory_info().rss
     draw_game = [
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', 'white_king', 'white_queen', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', 'black_king']
+        ['black_rook', '', 'black_bishop', 'black_queen', 'black_king', 'black_bishop', '', 'black_rook'],
+        ['black_pawn', 'black_pawn', 'black_pawn', '', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn'],
+        ['', '', '', '', '', 'black_knight', '', ''],
+        ['', '', '', '', '', '', 'white_bishop', ''],
+        ['', '', 'black_pawn', '', '', '', '', ''],
+        ['white_knight', '', '', '', '', 'black_knight', '', ''],
+        ['white_pawn', 'white_pawn', '', '', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn'],
+        ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_rook', ''],
         ]
     
     check_board = [
@@ -29,7 +29,8 @@ if __name__ == '__main__':
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    board = ChessBoard()
+    board = ChessBoard(draw_game, "white")
+    [print(mv) for mv in board.get_all_possible_moves("white")]
 
     agent = Agent(board, 'white')
     minimax = Minimax(3, board)
