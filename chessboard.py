@@ -789,7 +789,8 @@ class ChessBoard(tk.Tk):
         if player == "white":
             side = 1
         #print(kingPos)
-        if kingPos in impactPos[(side+1)%2]:
+        print(impactPos[1])
+        if True:
             legalList = []
 
             for mv in movesList:
