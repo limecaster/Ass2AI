@@ -746,6 +746,7 @@ class ChessBoard(tk.Tk):
                     side = 0
                     if player == "white":
                         side = 1
+                    k = 1
                     while j + k < 8:
                         if (i,j+k) in impactPos[side]:
                             movesList.append(Move((i,j),(i,j+k),self.current_board[i][j]))
