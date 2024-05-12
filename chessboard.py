@@ -847,49 +847,50 @@ class ChessBoard(tk.Tk):
     def impact_pos(self,unitType,pos):
         impactPos = [] 
         i,j = pos
+        tempboard = copy.deepcopy(self.current_board)
         if unitType == "black_pawn":
-            if i + 1 < 8 and self.current_board[i+1][j] == "":
+            if i + 1 < 8 and tempboard[i+1][j] == "":
                 impactPos.append((i+1,j))
-                if i == 1 and i + 2 < 8 and self.current_board[i+2][j] == "":
+                if i == 1 and i + 2 < 8 and tempboard[i+2][j] == "":
                     impactPos.append((i+2,j))
-            if i + 1 < 8 and j + 1 < 8 and self.current_board[i+1][j+1].find("white") == 0:
+            if i + 1 < 8 and j + 1 < 8 and tempboard[i+1][j+1].find("white") == 0:
                     impactPos.append((i+1,j+1))
-            if i + 1 < 8 and j - 1 >= 0 and self.current_board[i+1][j-1].find("white") == 0:
+            if i + 1 < 8 and j - 1 >= 0 and tempboard[i+1][j-1].find("white") == 0:
                     impactPos.append((i+1,j-1))
         elif unitType == "black_rook":
             k = 1
             while j + k < 8:
-                if self.current_board[i][j+k] == "":
+                if tempboard[i][j+k] == "":
                     impactPos.append((i,j + k))
                 else:
-                    if self.current_board[i][j+k].find("white")==0:
+                    if tempboard[i][j+k].find("white")==0:
                         impactPos.append((i,j + k))
                     break
                 k+=1
             k = 1
             while i + k < 8:
-                if self.current_board[i+k][j] == "":
+                if tempboard[i+k][j] == "":
                     impactPos.append((i+k,j))
                 else:
-                    if self.current_board[i+k][j].find("white")==0:
+                    if tempboard[i+k][j].find("white")==0:
                         impactPos.append((i+k,j))
                     break
                 k+=1
             k = 1
             while i - k >= 0:
-                if self.current_board[i-k][j] == "":
+                if tempboard[i-k][j] == "":
                     impactPos.append((i-k,j))
                 else:
-                    if self.current_board[i-k][j].find("white")==0:
+                    if tempboard[i-k][j].find("white")==0:
                         impactPos.append((i-k,j))
                     break
                 k+=1
             k = 1
             while j - k >= 0:
-                if self.current_board[i][j-k] == "":
+                if tempboard[i][j-k] == "":
                     impactPos.append((i,j-k))
                 else:
-                    if self.current_board[i][j-k].find("white")==0:
+                    if tempboard[i][j-k].find("white")==0:
                         impactPos.append((i,j-k))
                     break
                 k+=1
@@ -898,118 +899,118 @@ class ChessBoard(tk.Tk):
             moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
             moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
             for m in moves:
-                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                if tempboard[i + m[0]][j + m[1]] == "" or tempboard[i + m[0]][j + m[1]].find("white")==0:
                     impactPos.append((i+m[0],j+m[1]))
 
         elif unitType == "black_bishop":
             k = 1
             while i + k < 8 and j + k <8:
-                if self.current_board[i+k][j+k] == "":
+                if tempboard[i+k][j+k] == "":
                     impactPos.append((i+k,j+k))
                 else:
-                    if self.current_board[i+k][j+k].find("white")==0:
+                    if tempboard[i+k][j+k].find("white")==0:
                         impactPos.append((i+k,j+k))
                     break
                 k+=1
 
             k = 1
             while i - k >= 0  and j + k <8:
-                if self.current_board[i-k][j+k] == "":
+                if tempboard[i-k][j+k] == "":
                     impactPos.append((i-k,j+k))
                 else:
-                    if self.current_board[i-k][j+k].find("white")==0:
+                    if tempboard[i-k][j+k].find("white")==0:
                         impactPos.append((i-k,j+k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j - k >=0 :
-                if self.current_board[i+k][j-k] == "":
+                if tempboard[i+k][j-k] == "":
                     impactPos.append((i+k,j-k))
                 else:
-                    if self.current_board[i+k][j-k].find("white")==0:
+                    if tempboard[i+k][j-k].find("white")==0:
                         impactPos.append((i+k,j-k))
                     break
                 k+=1
             k = 1
             while i - k >= 0 and j - k >=0:
-                if self.current_board[i-k][j-k] == "":
+                if tempboard[i-k][j-k] == "":
                     impactPos.append((i-k,j-k))
                 else:
-                    if self.current_board[i-k][j-k].find("white")==0:
+                    if tempboard[i-k][j-k].find("white")==0:
                         impactPos.append((i-k,j-k))
                     break
                 k+=1    
         elif unitType == "black_queen":
             k = 1
             while j + k < 8:
-                if self.current_board[i][j+k] == "":
+                if tempboard[i][j+k] == "":
                     impactPos.append((i,j + k))
                 else:
-                    if self.current_board[i][j+k].find("white")==0:
+                    if tempboard[i][j+k].find("white")==0:
                         impactPos.append((i,j + k))
                     break
                 k+=1
             k = 1
             while i + k < 8:
-                if self.current_board[i+k][j] == "":
+                if tempboard[i+k][j] == "":
                     impactPos.append((i+k,j))
                 else:
-                    if self.current_board[i+k][j].find("white")==0:
+                    if tempboard[i+k][j].find("white")==0:
                         impactPos.append((i+k,j))
                     break
                 k+=1
             k = 1
             while i - k >= 0:
-                if self.current_board[i-k][j] == "":
+                if tempboard[i-k][j] == "":
                     impactPos.append((i-k,j))
                 else:
-                    if self.current_board[i-k][j].find("white")==0:
+                    if tempboard[i-k][j].find("white")==0:
                         impactPos.append((i-k,j))
                     break
                 k+=1
             k = 1
             while j - k >= 0:
-                if self.current_board[i][j-k] == "":
+                if tempboard[i][j-k] == "":
                     impactPos.append((i,j-k))
                 else:
-                    if self.current_board[i][j-k].find("white")==0:
+                    if tempboard[i][j-k].find("white")==0:
                         impactPos.append((i,j-k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j + k <8:
-                if self.current_board[i+k][j+k] == "":
+                if tempboard[i+k][j+k] == "":
                     impactPos.append((i+k,j+k))
                 else:
-                    if self.current_board[i+k][j+k].find("white")==0:
+                    if tempboard[i+k][j+k].find("white")==0:
                         impactPos.append((i+k,j+k))
                     break
                 k+=1
 
             k = 1
             while i - k >= 0  and j + k <8:
-                if self.current_board[i-k][j+k] == "":
+                if tempboard[i-k][j+k] == "":
                     impactPos.append((i-k,j+k))
                 else:
-                    if self.current_board[i-k][j+k].find("white")==0:
+                    if tempboard[i-k][j+k].find("white")==0:
                         impactPos.append((i-k,j+k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j - k >=0 :
-                if self.current_board[i+k][j-k] == "":
+                if tempboard[i+k][j-k] == "":
                     impactPos.append((i+k,j-k))
                 else:
-                    if self.current_board[i+k][j-k].find("white")==0:
+                    if tempboard[i+k][j-k].find("white")==0:
                         impactPos.append((i+k,j-k))
                     break
                 k+=1
             k = 1
             while i - k >= 0 and j - k >=0:
-                if self.current_board[i-k][j-k] == "":
+                if tempboard[i-k][j-k] == "":
                     impactPos.append((i-k,j-k))
                 else:
-                    if self.current_board[i-k][j-k].find("white")==0:
+                    if tempboard[i-k][j-k].find("white")==0:
                         impactPos.append((i-k,j-k))
                     break
                 k+=1
@@ -1018,52 +1019,52 @@ class ChessBoard(tk.Tk):
             # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
             moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
             for m in moves:
-                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("white")==0:
+                if tempboard[i + m[0]][j + m[1]] == "" or tempboard[i + m[0]][j + m[1]].find("white")==0:
                     impactPos.append((i+m[0],j+m[1]))
                     
         elif unitType =="white_pawn":
-            if i - 1 >= 0 and self.current_board[i-1][j] == "":
+            if i - 1 >= 0 and tempboard[i-1][j] == "":
                 impactPos.append((i-1,j))
-                if i == 6 and i - 2 >=0 and self.current_board[i-2][j] == "":
+                if i == 6 and i - 2 >=0 and tempboard[i-2][j] == "":
                     impactPos.append((i-2,j))
-            if i - 1 >= 0 and j + 1 < 8 and self.current_board[i-1][j+1].find("black") == 0:
+            if i - 1 >= 0 and j + 1 < 8 and tempboard[i-1][j+1].find("black") == 0:
                     impactPos.append((i-1,j+1))
-            if i - 1 >= 0 and j - 1 >= 0 and self.current_board[i-1][j-1].find("black") == 0:
+            if i - 1 >= 0 and j - 1 >= 0 and tempboard[i-1][j-1].find("black") == 0:
                     impactPos.append((i-1,j-1))   
         elif unitType == "white_rook":
             k = 1
             while j + k < 8:
-                if self.current_board[i][j+k] == "":
+                if tempboard[i][j+k] == "":
                     impactPos.append((i,j + k))
                 else:
-                    if self.current_board[i][j+k].find("black")==0:
+                    if tempboard[i][j+k].find("black")==0:
                         impactPos.append((i,j + k))
                     break
                 k+=1
             k = 1
             while i + k < 8:
-                if self.current_board[i+k][j] == "":
+                if tempboard[i+k][j] == "":
                     impactPos.append((i+k,j))
                 else:
-                    if self.current_board[i+k][j].find("black")==0:
+                    if tempboard[i+k][j].find("black")==0:
                         impactPos.append((i+k,j))
                     break
                 k+=1
             k = 1
             while i - k >= 0:
-                if self.current_board[i-k][j] == "":
+                if tempboard[i-k][j] == "":
                     impactPos.append((i-k,j))
                 else:
-                    if self.current_board[i-k][j].find("black")==0:
+                    if tempboard[i-k][j].find("black")==0:
                         impactPos.append((i-k,j))
                     break
                 k+=1
             k = 1
             while j - k >= 0:
-                if self.current_board[i][j-k] == "":
+                if tempboard[i][j-k] == "":
                     impactPos.append((i,j-k))
                 else:
-                    if self.current_board[i][j-k].find("black")==0:
+                    if tempboard[i][j-k].find("black")==0:
                         impactPos.append((i,j-k))
                     break
                 k+=1   
@@ -1071,44 +1072,44 @@ class ChessBoard(tk.Tk):
             moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
             moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
             for m in moves:
-                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                if tempboard[i + m[0]][j + m[1]] == "" or tempboard[i + m[0]][j + m[1]].find("black")==0:
                     impactPos.append((i+m[0],j+m[1]))    
 
         elif unitType == "white_bishop":
             k = 1
             while i + k < 8 and j + k <8:
-                if self.current_board[i+k][j+k] == "":
+                if tempboard[i+k][j+k] == "":
                     impactPos.append((i+k,j+k))
                 else:
-                    if self.current_board[i+k][j+k].find("black")==0:
+                    if tempboard[i+k][j+k].find("black")==0:
                         impactPos.append((i+k,j+k))
                     break
                 k+=1
 
             k = 1
             while i - k >= 0  and j + k <8:
-                if self.current_board[i-k][j+k] == "":
+                if tempboard[i-k][j+k] == "":
                     impactPos.append((i-k,j+k))
                 else:
-                    if self.current_board[i-k][j+k].find("black")==0:
+                    if tempboard[i-k][j+k].find("black")==0:
                         impactPos.append((i-k,j+k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j - k >=0 :
-                if self.current_board[i+k][j-k] == "":
+                if tempboard[i+k][j-k] == "":
                     impactPos.append((i+k,j-k))
                 else:
-                    if self.current_board[i+k][j-k].find("black")==0:
+                    if tempboard[i+k][j-k].find("black")==0:
                         impactPos.append((i+k,j-k))
                     break
                 k+=1
             k = 1
             while i - k >= 0 and j - k >=0:
-                if self.current_board[i-k][j-k] == "":
+                if tempboard[i-k][j-k] == "":
                     impactPos.append((i-k,j-k))
                 else:
-                    if self.current_board[i-k][j-k].find("black")==0:
+                    if tempboard[i-k][j-k].find("black")==0:
                         impactPos.append((i-k,j-k))
                     break
                 k+=1
@@ -1117,74 +1118,74 @@ class ChessBoard(tk.Tk):
         elif unitType == "white_queen":
             k = 1
             while j + k < 8:
-                if self.current_board[i][j+k] == "":
+                if tempboard[i][j+k] == "":
                     impactPos.append((i,j + k))
                 else:
-                    if self.current_board[i][j+k].find("black")==0:
+                    if tempboard[i][j+k].find("black")==0:
                         impactPos.append((i,j + k))
                     break
                 k+=1
             k = 1
             while i + k < 8:
-                if self.current_board[i+k][j] == "":
+                if tempboard[i+k][j] == "":
                     impactPos.append((i+k,j))
                 else:
-                    if self.current_board[i+k][j].find("black")==0:
+                    if tempboard[i+k][j].find("black")==0:
                         impactPos.append((i+k,j))
                     break
                 k+=1
             k = 1
             while i - k >= 0:
-                if self.current_board[i-k][j] == "":
+                if tempboard[i-k][j] == "":
                     impactPos.append((i-k,j))
                 else:
-                    if self.current_board[i-k][j].find("black")==0:
+                    if tempboard[i-k][j].find("black")==0:
                         impactPos.append((i-k,j))
                     break
                 k+=1
             k = 1
             while j - k >= 0:
-                if self.current_board[i][j-k] == "":
+                if tempboard[i][j-k] == "":
                     impactPos.append((i,j-k))
                 else:
-                    if self.current_board[i][j-k].find("black")==0:
+                    if tempboard[i][j-k].find("black")==0:
                         impactPos.append((i,j-k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j + k <8:
-                if self.current_board[i+k][j+k] == "":
+                if tempboard[i+k][j+k] == "":
                     impactPos.append((i+k,j+k))
                 else:
-                    if self.current_board[i+k][j+k].find("black")==0:
+                    if tempboard[i+k][j+k].find("black")==0:
                         impactPos.append((i+k,j+k))
                     break
                 k+=1
 
             k = 1
             while i - k >= 0  and j + k <8:
-                if self.current_board[i-k][j+k] == "":
+                if tempboard[i-k][j+k] == "":
                     impactPos.append((i-k,j+k))
                 else:
-                    if self.current_board[i-k][j+k].find("black")==0:
+                    if tempboard[i-k][j+k].find("black")==0:
                         impactPos.append((i-k,j+k))
                     break
                 k+=1
             k = 1
             while i + k < 8 and j - k >=0 :
-                if self.current_board[i+k][j-k] == "":
+                if tempboard[i+k][j-k] == "":
                     impactPos.append((i+k,j-k))
                 else:
-                    if self.current_board[i+k][j-k].find("black")==0:
+                    if tempboard[i+k][j-k].find("black")==0:
                         impactPos.append((i+k,j-k))
                     break
                 k+=1
             k = 1
             while i - k >= 0 and j - k >=0:
-                if self.current_board[i-k][j-k] == "":
+                if tempboard[i-k][j-k] == "":
                     impactPos.append((i-k,j-k))
                 else:
-                    if self.current_board[i-k][j-k].find("black")==0:
+                    if tempboard[i-k][j-k].find("black")==0:
                         impactPos.append((i-k,j-k))
                     break
                 k+=1   
@@ -1194,7 +1195,7 @@ class ChessBoard(tk.Tk):
             # moves = list(filter(lambda x: (originalPos[0] + x[0] in list(range(0,8)))  and (originalPos[1] + x[1] in list(range(0,8))) ))
             moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
             for m in moves:
-                if self.current_board[i + m[0]][j + m[1]] == "" or self.current_board[i + m[0]][j + m[1]].find("black")==0:
+                if tempboard[i + m[0]][j + m[1]] == "" or tempboard[i + m[0]][j + m[1]].find("black")==0:
                     impactPos.append((i+m[0],j+m[1]))    
                     
         return impactPos
@@ -1262,114 +1263,115 @@ class ChessBoard(tk.Tk):
     def isCheck(self, board=None, player:str =['white','black'], ):
 
         # player nguoi 
+        tempboard = copy.deepcopy(self.current_board)
         originalPos = None
         for i in range(8):
             for j in range(8):
-                if self.current_board[i][j].find("king") >= 0 and self.current_board[i][j].find(player) >= 0:
+                if tempboard[i][j].find("king") >= 0 and tempboard[i][j].find(player) >= 0:
                     originalPos=[i,j]
         if player == "black":
             i = 1
             #check diag
             flag =False
             while originalPos[0] - i > 0 and originalPos[1] - i > 0 and not flag:
-                if  self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_king" and i==1:
+                if  tempboard[originalPos[0]-i][originalPos[1]-i] == "white_king" and i==1:
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_bishop":
+                if tempboard[originalPos[0]-i][originalPos[1]-i] == "white_queen" or tempboard[originalPos[0]-i][originalPos[1]-i] == "white_bishop":
                     flag= True
                     break
                 i+=1
             i = 1
             
             while originalPos[0] - i > 0 and originalPos[1] + i < 8 and not flag:
-                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_king" and i==1:
+                if tempboard[originalPos[0]-i][originalPos[1]+i] == "white_king" and i==1:
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_bishop":
+                if tempboard[originalPos[0]-i][originalPos[1]+i] == "white_queen" or tempboard[originalPos[0]-i][originalPos[1]+i] == "white_bishop":
                     flag= True
                     break
                 i+=1
             i = 1
 
             while originalPos[0] + i < 8 and originalPos[1] - i > 0 and not flag:
-                if (self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_king") and i==1:
+                if (tempboard[originalPos[0]+i][originalPos[1]-i] == "white_pawn" or tempboard[originalPos[0]+i][originalPos[1]-i] == "white_king") and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_bishop":
+                if tempboard[originalPos[0]+i][originalPos[1]-i] == "white_queen" or tempboard[originalPos[0]+i][originalPos[1]-i] == "white_bishop":
                     flag= True
                     break
                 i+=1
             i = 1
 
             while originalPos[0] + i < 8 and originalPos[1] + i <8 and not flag:
-                if (self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_king") and i==1:
+                if (tempboard[originalPos[0]+i][originalPos[1]+i] == "white_pawn" or tempboard[originalPos[0]+i][originalPos[1]+i] == "white_king") and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_bishop":
+                if tempboard[originalPos[0]+i][originalPos[1]+i] == "white_queen" or tempboard[originalPos[0]+i][originalPos[1]+i] == "white_bishop":
                     flag= True
                     break
                 i+=1
             i = 1
             # check cross:
             while originalPos[1] + i <8 and not flag:
-                if self.current_board[originalPos[0]][originalPos[1]+i] == "white_king"  and i==1:
+                if tempboard[originalPos[0]][originalPos[1]+i] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["white_queen","white_rook",""]:
+                if tempboard[originalPos[0]][originalPos[1]+i]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "white_rook":
+                if tempboard[originalPos[0]][originalPos[1]+i] == "white_queen" or tempboard[originalPos[0]][originalPos[1]+i] == "white_rook":
                     flag= True
                     break
                 i+=1
             i = 1
             while originalPos[0] + i <8 and not flag:
-                if self.current_board[originalPos[0]+i][originalPos[1]] == "white_king"  and i==1:
+                if tempboard[originalPos[0]+i][originalPos[1]] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["white_queen","white_rook",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "white_rook":
+                if tempboard[originalPos[0]+i][originalPos[1]] == "white_queen" or tempboard[originalPos[0]+i][originalPos[1]] == "white_rook":
                     flag= True
                     break
                 i+=1
             i = 1
             while originalPos[1] - i >8 and not flag:
-                if self.current_board[originalPos[0]][originalPos[1]-i] == "white_king"  and i==1:
+                if tempboard[originalPos[0]][originalPos[1]-i] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["white_queen","white_rook",""]:
+                if tempboard[originalPos[0]][originalPos[1]-i]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "white_rook":
+                if tempboard[originalPos[0]][originalPos[1]-i] == "white_queen" or tempboard[originalPos[0]][originalPos[1]-i] == "white_rook":
                     flag= True
                     break
                 i+=1
             i = 1
             while originalPos[0] - i >8 and not flag:
-                if self.current_board[originalPos[0]-i][originalPos[1]] == "white_king"  and i==1:
+                if tempboard[originalPos[0]-i][originalPos[1]] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["white_queen","white_rook",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "white_rook":
+                if tempboard[originalPos[0]-i][originalPos[1]] == "white_queen" or tempboard[originalPos[0]-i][originalPos[1]] == "white_rook":
                     flag= True
                     break
                 i+=1
@@ -1381,7 +1383,7 @@ class ChessBoard(tk.Tk):
                     new_row = originalPos[0] + move[0]
                     new_col = originalPos[1] + move[1]
                     if 0 <= new_row < 8 and 0 <= new_col < 8:
-                        if self.current_board[new_row][new_col] == 'white_knight':
+                        if tempboard[new_row][new_col] == 'white_knight':
                             flag =True
             return flag
         if player == "white":
@@ -1391,16 +1393,16 @@ class ChessBoard(tk.Tk):
             flag =False
             while originalPos[0] - i > 0 and originalPos[1] - i > 0 and not flag:
                 
-                if (self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_pawn" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_king") and i==1:
+                if (tempboard[originalPos[0]-i][originalPos[1]-i] == "black_pawn" or tempboard[originalPos[0]-i][originalPos[1]-i] == "black_king") and i==1:
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
                     
                     flag =False
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_bishop":
+                if tempboard[originalPos[0]-i][originalPos[1]-i] == "black_queen" or tempboard[originalPos[0]-i][originalPos[1]-i] == "black_bishop":
                     
                     flag= True
                     break
@@ -1409,15 +1411,15 @@ class ChessBoard(tk.Tk):
             
             while originalPos[0] - i > 0 and originalPos[1] + i < 8 and not flag:
                 
-                if (self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_pawn" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_king") and i==1:
+                if (tempboard[originalPos[0]-i][originalPos[1]+i] == "black_pawn" or tempboard[originalPos[0]-i][originalPos[1]+i] == "black_king") and i==1:
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_bishop":
+                if tempboard[originalPos[0]-i][originalPos[1]+i] == "black_queen" or tempboard[originalPos[0]-i][originalPos[1]+i] == "black_bishop":
                     flag= True
                     break
                 i+=1
@@ -1425,13 +1427,13 @@ class ChessBoard(tk.Tk):
             
             while originalPos[0] + i < 8 and originalPos[1] - i > 0 and not flag:
                 
-                if  self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_king" and i==1:
+                if  tempboard[originalPos[0]+i][originalPos[1]-i] == "black_king" and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_bishop":
+                if tempboard[originalPos[0]+i][originalPos[1]-i] == "black_queen" or tempboard[originalPos[0]+i][originalPos[1]-i] == "black_bishop":
                     flag= True
                     break
                 i+=1
@@ -1439,13 +1441,13 @@ class ChessBoard(tk.Tk):
 
             while originalPos[0] + i < 8 and originalPos[1] + i <8 and not flag:
                 
-                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_king" and i==1:
+                if tempboard[originalPos[0]+i][originalPos[1]+i] == "black_king" and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_bishop":
+                if tempboard[originalPos[0]+i][originalPos[1]+i] == "black_queen" or tempboard[originalPos[0]+i][originalPos[1]+i] == "black_bishop":
                     flag= True
                     break
                 i+=1
@@ -1453,26 +1455,26 @@ class ChessBoard(tk.Tk):
             # check cross:
             while originalPos[1] + i <8 and not flag:
                 
-                if self.current_board[originalPos[0]][originalPos[1]+i] == "black_king"  and i==1:
+                if tempboard[originalPos[0]][originalPos[1]+i] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["black_queen","black_rook",""]:
+                if tempboard[originalPos[0]][originalPos[1]+i]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "black_rook":
+                if tempboard[originalPos[0]][originalPos[1]+i] == "black_queen" or tempboard[originalPos[0]][originalPos[1]+i] == "black_rook":
                     flag= True
                     break
                 i+=1
             i = 1
             while originalPos[0] + i <8 and not flag:
                 
-                if self.current_board[originalPos[0]+i][originalPos[1]] == "black_king"  and i==1:
+                if tempboard[originalPos[0]+i][originalPos[1]] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["black_queen","black_rook",""]:
+                if tempboard[originalPos[0]+i][originalPos[1]]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "black_rook":
+                if tempboard[originalPos[0]+i][originalPos[1]] == "black_queen" or tempboard[originalPos[0]+i][originalPos[1]] == "black_rook":
                     flag= True
                     break
                 i+=1
@@ -1480,26 +1482,26 @@ class ChessBoard(tk.Tk):
             
             while originalPos[1] - i >0 and not flag:
                 
-                if self.current_board[originalPos[0]][originalPos[1]-i] == "black_king"  and i==1:
+                if tempboard[originalPos[0]][originalPos[1]-i] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["black_queen","black_rook",""]:
+                if tempboard[originalPos[0]][originalPos[1]-i]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "black_rook":
+                if tempboard[originalPos[0]][originalPos[1]-i] == "black_queen" or tempboard[originalPos[0]][originalPos[1]-i] == "black_rook":
                     flag= True
                     break
                 i+=1
             i = 1
             while originalPos[0] - i >0 and not flag:
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]] == "black_king"  and i==1:
+                if tempboard[originalPos[0]-i][originalPos[1]] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["black_queen","black_rook",""]:
+                if tempboard[originalPos[0]-i][originalPos[1]]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "black_rook":
+                if tempboard[originalPos[0]-i][originalPos[1]] == "black_queen" or tempboard[originalPos[0]-i][originalPos[1]] == "black_rook":
                     flag= True
                     break
                 i+=1
@@ -1511,7 +1513,7 @@ class ChessBoard(tk.Tk):
                     new_row = originalPos[0] + move[0]
                     new_col = originalPos[1] + move[1]
                     if 0 <= new_row < 8 and 0 <= new_col < 8:
-                        if self.current_board[new_row][new_col] == 'black_knight':
+                        if tempboard[new_row][new_col] == 'black_knight':
                             flag =True
             return flag
        
@@ -1519,7 +1521,7 @@ class ChessBoard(tk.Tk):
         if not self.isCheck(None, player):
             return False
         moves = self.get_all_possible_moves(player)
-        board = self.current_board
+        board = copy.deepcopy(self.current_board)
         for move in moves:
             unit = board[move.position[0]][move.position[1]]
             board[move.position[0]][move.position[1]] = ""
