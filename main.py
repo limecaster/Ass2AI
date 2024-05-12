@@ -12,13 +12,18 @@ import json
 import copy
 
 class thread(threading.Thread): 
-    def __init__(self, thread_name, thread_ID, board, play = False, goFirst = "white"): 
+    def __init__(self, thread_name, thread_ID, board, play = False, goFirst = "white", difficulty = "intermediate"): 
         threading.Thread.__init__(self) 
         self.thread_name = thread_name 
         self.thread_ID = thread_ID 
         self.board = board
         self.player = play
         self.goFirst = goFirst
+        self.minimax_depth = 3
+        if difficulty == "easy":
+            self.minimax_depth = 2
+        elif difficulty == "hard":
+            self.minimax_depth = 4
         # helper function to execute the threads
     def time_convert(self,sec):
         sec = int(sec)
@@ -28,7 +33,7 @@ class thread(threading.Thread):
         mins = mins % 60
     def run(self): 
         agent = Agent(board, 'white')
-        minimax = Minimax(3, board)
+        minimax = Minimax(self.minimax_depth, board)
         count = 1
         while not board.is_game_over():
             if self.goFirst == "white":
@@ -165,7 +170,7 @@ if __name__ == '__main__':
     board = ChessBoard(None, "white", playable=False,player_side="white")
     [print(mv) for mv in board.get_all_possible_moves("white")]
 
-    thread1 = thread("GFG", 1000,board,play=False,goFirst="black") 
+    thread1 = thread("GFG", 1000,board,play=False,goFirst="white", difficulty= "intermediate") 
     thread1.start()
     board.mainloop()
     
