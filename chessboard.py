@@ -128,7 +128,7 @@ class ChessBoard(tk.Tk):
         if overlapping:
             tags = self.canvas.gettags(overlapping[-1])
             # print(overlapping[-1])
-            print(tags)
+            #print(tags)
             self.oldPosX = x
             self.oldPosY = y
             row = (y) // self.size
@@ -1321,8 +1321,8 @@ class ChessBoard(tk.Tk):
             overlapping = self.canvas.find_overlapping(x, y, x, y)
             tags = self.canvas.gettags(overlapping[-1])             
             self.move_log.append(Move((r,c),(row,col),tags[0]))
-            for ele in self.move_log:
-                print(ele)
+            #for ele in self.move_log:
+            #    print(ele)
             self.previous_board.insert(0,copy.deepcopy(self.current_board))
             self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]] = ""
             self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = move.unit_type
@@ -1590,15 +1590,15 @@ class ChessBoard(tk.Tk):
         if not self.isCheck(None, player):
             return False
         moves = self.get_all_possible_moves(player)
-        for ele in moves:
-            print(ele)
+        #for ele in moves:
+        #    print(ele)
         board = copy.deepcopy(self.current_board)
 
         for move in moves:
             board = copy.deepcopy(self.current_board)
 
             unit = board[move.position[0]][move.position[1]]
-            print(unit)
+            #print(unit)
             board[move.position[0]][move.position[1]] = ""
             board[move.new_pos[0]][move.new_pos[1]] = unit
             if move.special_move == "promote":
@@ -1673,8 +1673,4 @@ if __name__ == "__main__":
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    app = ChessBoard(game)
-    for i in app.get_all_possible_moves("white"):
-        print(i)
-    print(app.isCheckMate(player ="white"))
-    app.mainloop()
+    

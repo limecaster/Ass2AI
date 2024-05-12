@@ -102,10 +102,10 @@ if __name__ == '__main__':
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    board = ChessBoard(draw_game, "white", playable=True,player_side="white")
+    board = ChessBoard(None, "white", playable=False,player_side="white")
     [print(mv) for mv in board.get_all_possible_moves("white")]
 
-    thread1 = thread("GFG", 1000,board,play=True) 
+    thread1 = thread("GFG", 1000,board,play=False) 
     thread1.start()
     board.mainloop()
     
