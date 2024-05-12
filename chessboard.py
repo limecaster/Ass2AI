@@ -1253,23 +1253,311 @@ class ChessBoard(tk.Tk):
             self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = move.unit_type
             if self.move_log[-1].special_move == "promote":
                 self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
+    def isCheck(self, board=None, player:str =['white','black'], ):
 
+        # player nguoi 
+        originalPos = None
+        for i in range(8):
+            for j in range(8):
+                if self.current_board[i][j].find("king") >= 0 and self.current_board[i][j].find(player) >= 0:
+                    originalPos=[i,j]
+        if player == "black":
+            i = 1
+            #check diag
+            flag =False
+            while originalPos[0] - i > 0 and originalPos[1] - i > 0 and not flag:
+                if  self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_king" and i==1:
+                    flag= True
+                    break
+                
+                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["white_queen","white_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            
+            while originalPos[0] - i > 0 and originalPos[1] + i < 8 and not flag:
+                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_king" and i==1:
+                    flag= True
+                    break
+                
+                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["white_queen","white_bishop"]:
+                    flag =False
+                    break
+
+                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "white_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+
+            while originalPos[0] + i < 8 and originalPos[1] - i > 0 and not flag:
+                if (self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_king") and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["white_queen","white_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+
+            while originalPos[0] + i < 8 and originalPos[1] + i <8 and not flag:
+                if (self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_king") and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["white_queen","white_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            # check cross:
+            while originalPos[1] + i <8 and not flag:
+                if self.current_board[originalPos[0]][originalPos[1]+i] == "white_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["white_queen","white_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "white_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            while originalPos[0] + i <8 and not flag:
+                if self.current_board[originalPos[0]+i][originalPos[1]] == "white_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["white_queen","white_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "white_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            while originalPos[1] - i >8 and not flag:
+                if self.current_board[originalPos[0]][originalPos[1]-i] == "white_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["white_queen","white_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "white_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            while originalPos[0] - i >8 and not flag:
+                if self.current_board[originalPos[0]-i][originalPos[1]] == "white_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["white_queen","white_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "white_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            # check knight:
+            if not flag:
+                moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
+                for move in moves:
+                    new_row = originalPos[0] + move[0]
+                    new_col = originalPos[1] + move[1]
+                    if 0 <= new_row < 8 and 0 <= new_col < 8:
+                        if self.current_board[new_row][new_col] == 'white_knight':
+                            flag =True
+            return flag
+        if player == "white":
+            
+            i = 1
+            #check diag
+            flag =False
+            while originalPos[0] - i > 0 and originalPos[1] - i > 0 and not flag:
+                
+                if (self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_pawn" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_king") and i==1:
+                    flag= True
+                    break
+                
+                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["black_queen","black_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            
+            while originalPos[0] - i > 0 and originalPos[1] + i < 8 and not flag:
+                
+                if (self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_pawn" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_king") and i==1:
+                    flag= True
+                    break
+                
+                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["black_queen","black_bishop"]:
+                    flag =False
+                    break
+
+                if self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]+i] == "black_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            
+            while originalPos[0] + i < 8 and originalPos[1] - i > 0 and not flag:
+                
+                if  self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_king" and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["black_queen","black_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+
+            while originalPos[0] + i < 8 and originalPos[1] + i <8 and not flag:
+                
+                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_king" and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["black_queen","black_bishop"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_bishop":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            # check cross:
+            while originalPos[1] + i <8 and not flag:
+                
+                if self.current_board[originalPos[0]][originalPos[1]+i] == "black_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["black_queen","black_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "black_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            while originalPos[0] + i <8 and not flag:
+                
+                if self.current_board[originalPos[0]+i][originalPos[1]] == "black_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["black_queen","black_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]+i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "black_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            
+            while originalPos[1] - i >0 and not flag:
+                
+                if self.current_board[originalPos[0]][originalPos[1]-i] == "black_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["black_queen","black_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "black_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            while originalPos[0] - i >0 and not flag:
+                
+                if self.current_board[originalPos[0]-i][originalPos[1]] == "black_king"  and i==1:
+                    flag= True
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["black_queen","black_rook"]:
+                    flag =False
+                    break
+                if self.current_board[originalPos[0]-i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "black_rook":
+                    flag= True
+                    break
+                i+=1
+            i = 1
+            # check knight:
+            if not flag:
+                moves = [(-1,-2), (-1,2), (1,-2), (1,2), (-2,-1), (-2,1), (2,-1), (2,1)]
+                for move in moves:
+                    new_row = originalPos[0] + move[0]
+                    new_col = originalPos[1] + move[1]
+                    if 0 <= new_row < 8 and 0 <= new_col < 8:
+                        if self.current_board[new_row][new_col] == 'black_knight':
+                            flag =True
+            return flag
+       
+    def isCheckMate(self,player:str=['white','black']):
+        if not self.isCheck(None, player):
+            print("nngoo")
+            return False
+        moves = self.get_all_possible_moves(player)
+        board = self.current_board
+        for move in moves:
+            unit = board[move.position[0]][move.position[1]]
+            board[move.position[0]][move.position[1]] = ""
+            board[move.new_pos[0]][move.new_pos[1]] = unit
+            if move.special_move == "promote":
+                board[move.new_pos[0]][move.new_pos[1]] = move.promoted
+            if not self.isCheck(board,player):
+                return False
         
-        
+        return True
+
+
+    def is_draw(self,player: str = ['white', 'black']):
+        if player =="white":
+            res = self.get_all_possible_moves("white")
+            return True if len(res) == 0 else False
+        if player == "black":
+            res = self.get_all_possible_moves("black")
+            return True if len(res) == 0 else False
+
 
 
 if __name__ == "__main__":
+    # game = [
+    #     ['black_rook', '', '', '', 'black_king', '', '', 'black_rook'],
+    #     ['black_pawn', 'black_pawn', 'black_pawn', '', '', 'black_pawn','black_pawn', 'black_pawn'],
+    #     ['', '', '', '', 'black_pawn', 'black_knight', '', ''],
+    #     ['', 'black_knight', '', 'black_pawn', '', 'black_bishop', '', ''],
+    #     ['', '', '', '', '', 'white_pawn', 'white_pawn', ''], 
+    #     ['', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],
+    #     ['white_pawn', '', '', 'white_king', 'white_pawn', '', '', 'white_rook'],
+    #     ['white_rook', '', '', '', '', 'white_bishop', 'white_knight', '']
+    #     ]
+    # test checkmate
     game = [
         ['black_rook', '', '', '', 'black_king', '', '', 'black_rook'],
         ['black_pawn', 'black_pawn', 'black_pawn', '', '', 'black_pawn','black_pawn', 'black_pawn'],
         ['', '', '', '', 'black_pawn', 'black_knight', '', ''],
         ['', 'black_knight', '', 'black_pawn', '', 'black_bishop', '', ''],
         ['', '', '', '', '', 'white_pawn', 'white_pawn', ''], 
-        ['', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],
-        ['white_pawn', '', '', 'white_king', 'white_pawn', '', '', 'white_rook'],
-        ['white_rook', '', '', '', '', 'white_bishop', 'white_knight', '']
+        ['', '', '', 'white_pawn', '', '', '', 'white_pawn'],
+        ['white_pawn', '', '', 'black_queen', 'white_pawn', '', '', 'white_rook'],
+        ['white_rook', '', '', 'white_king', '', 'white_bishop', 'white_knight', '']
         ]
     app = ChessBoard(game, 'white')
     for i in app.get_all_possible_moves("white"):
         print(i)
+    print(app.isCheckMate(player ="white"))
     app.mainloop()
