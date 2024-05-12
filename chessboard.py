@@ -1592,7 +1592,7 @@ if __name__ == "__main__":
         ['white_pawn', '', '', 'black_queen', 'white_pawn', '', '', 'white_rook'],
         ['white_rook', '', '', 'white_king', '', 'white_bishop', 'white_knight', '']
         ]
-    app = ChessBoard(game, 'white')
+    app = ChessBoard()
     for i in app.get_all_possible_moves("white"):
         print(i)
     print(app.isCheckMate(player ="white"))
