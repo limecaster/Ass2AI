@@ -58,6 +58,7 @@ class thread(threading.Thread):
                     print("White wins!")
                 else:
                     print("It's a draw!")
+                break
     
         print(minimax.get_moves_time())
         end_time = time.time()
