@@ -1536,6 +1536,7 @@ class ChessBoard(tk.Tk):
             return flag
        
     def isCheckMate(self,player:str=['white','black']):
+        flag = False
         if not self.isCheck(None, player):
             return False
         moves = self.get_all_possible_moves(player)
@@ -1554,12 +1555,15 @@ class ChessBoard(tk.Tk):
                 board[move.new_pos[0]][move.new_pos[1]] = move.promoted
 
             if not self.isCheck(board,player):
-                return False
+                flag = False
+            if self.isCheck(board,player):
+                flag = True
         if player == "white":
             self.is_checkmated = "white"
         else:
             self.is_checkmated = "black"
-        return True
+            
+        return flag
 
 
     def is_draw(self,player: str = ['white', 'black']):
@@ -1613,15 +1617,15 @@ if __name__ == "__main__":
     #     ]
     # test checkmate
     game = [
-        ['black_rook', '', 'black_bishop', '', 'black_king', 'black_bishop', '', 'black_rook'],
-        ['black_pawn', '', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn'],
-        ['', '', '', '', '', '', 'black_knight', ''],
-        ['', '', '', '', '', '', '', ''],
-        ['', 'black_knight', '', '', '', '', '', ''],
-        ['white_knight', '', '', 'white_pawn', '', 'black_knight', '', 'white_pawn'],    
-        ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
-        ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
-    ]
+        ['black_rook', '', 'black_bishop', '', 'black_king', '', '', 'black_rook'],
+        ['black_pawn', 'black_pawn', 'black_pawn', '', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn'],
+        ['', '', '', '', '', 'black_knight', '', ''],
+        ['', '', '', '', '', '', 'white_bishop', ''],
+        ['', 'black_bishop', 'black_pawn', '', '', '', '', ''],
+        ['white_knight', '', '', '', '', 'black_knight', '', ''],
+        ['white_pawn', 'white_pawn', '', 'black_queen', 'white_pawn', 'white_pawn', 'white_pawn', 'white_pawn'],
+        ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_rook', ''],
+        ]
     app = ChessBoard(game)
     for i in app.get_all_possible_moves("white"):
         print(i)
