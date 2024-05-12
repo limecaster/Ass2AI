@@ -14,9 +14,9 @@ if __name__ == '__main__':
         ['', '', '', '', 'black_pawn', 'black_knight', '', ''],
         ['', 'black_knight', '', 'black_pawn', '', 'black_bishop', '', ''],
         ['', '', '', '', '', 'white_pawn', 'white_pawn', ''], 
-        ['', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],
-        ['white_pawn', '', '', 'white_king', 'white_pawn', '', '', 'white_rook'],
-        ['white_rook', '', '', '', '', 'white_bishop', 'white_knight', '']
+        ['', '', '', 'white_pawn', '', '', '', 'white_pawn'],
+        ['white_pawn', '', '', 'black_queen', 'white_pawn', '', '', 'white_rook'],
+        ['white_rook', '', '', 'white_king', '', 'white_bishop', 'white_knight', '']
         ]
     board = ChessBoard(game, 'white')
     #print(board.get_all_possible_moves("white"))
@@ -30,6 +30,7 @@ if __name__ == '__main__':
         minimax_move, total_minimax_move = minimax.get_best_move_for_black()
         board.make_move(minimax_move)
         print(i, minimax_move, total_minimax_move)
+        
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss
 

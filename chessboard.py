@@ -579,7 +579,7 @@ class ChessBoard(tk.Tk):
                     moves = list(filter(lambda x: i + x[0] in list(range(0,8))  and j + x[1] in list(range(0,8)),moves))
                     for m in moves:
                         if board[i + m[0]][j + m[1]] == "" or board[i + m[0]][j + m[1]].find("black")==0:
-                            impactPos[0].append((i+m[0],j+m[1]))
+                            impactPos[1].append((i+m[0],j+m[1]))
         return impactPos
 
     def get_all_possible_moves(self,player: str = ['white', 'black']):
@@ -794,9 +794,11 @@ class ChessBoard(tk.Tk):
 
             for mv in movesList:
                 temp_board = copy.deepcopy(self.current_board)
-                unit = mv.unit_type
+                unit = temp_board[mv.position[0]][mv.position[1]]
                 temp_board[mv.position[0]][mv.position[1]] = ""
                 temp_board[mv.new_pos[0]][mv.new_pos[1]] = unit
+                #print(temp_board)
+
                 if mv.special_move == "promote":
                     temp_board[mv.new_pos[0]][mv.new_pos[1]] = mv.promoted
                 newImpact = self.get_all_impact(copy.deepcopy(temp_board))
@@ -805,6 +807,8 @@ class ChessBoard(tk.Tk):
                 #print(newImpact)
                 if mv.unit_type.find("_king")>0:
                     #print(mv, mv.new_pos in newImpact[(side + 1)%2])
+                    print(temp_board[7][2])
+                    print(newImpact)
                     if mv.new_pos in newImpact[(side + 1)%2]:
                         continue
                 else:
