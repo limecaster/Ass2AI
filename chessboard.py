@@ -1535,13 +1535,13 @@ class ChessBoard(tk.Tk):
     def is_draw(self,player: str = ['white', 'black']):
         if player =="white":
             res = self.get_all_possible_moves("white")
-            if len(res) == 0:
+            if len(res) == 0 and not self.isCheck(None, player):
                 self.is_stalemated = 'white'
                 return True
             return False
         if player == "black":
             res = self.get_all_possible_moves("black")
-            if len(res) == 0:
+            if len(res) == 0 and not self.isCheck(None, player):
                 self.is_stalemated = 'black'
                 return True
             return False
