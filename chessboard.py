@@ -1261,9 +1261,10 @@ class ChessBoard(tk.Tk):
             if self.move_log[-1].special_move == "promote":
                 self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
     def isCheck(self, board=None, player:str =['white','black'], ):
-
+        
         # player nguoi 
-        tempboard = copy.deepcopy(self.current_board)
+
+        tempboard = copy.deepcopy(board) if board else copy.deepcopy(self.current_board)
         originalPos = None
         for i in range(8):
             for j in range(8):
@@ -1521,14 +1522,20 @@ class ChessBoard(tk.Tk):
         if not self.isCheck(None, player):
             return False
         moves = self.get_all_possible_moves(player)
+        for ele in moves:
+            print(ele)
+        board = copy.deepcopy(self.current_board)
+
         for move in moves:
             board = copy.deepcopy(self.current_board)
 
             unit = board[move.position[0]][move.position[1]]
+            print(unit)
             board[move.position[0]][move.position[1]] = ""
             board[move.new_pos[0]][move.new_pos[1]] = unit
             if move.special_move == "promote":
                 board[move.new_pos[0]][move.new_pos[1]] = move.promoted
+
             if not self.isCheck(board,player):
                 return False
         if player == "white":
@@ -1594,12 +1601,12 @@ if __name__ == "__main__":
         ['', '', '', '', '', '', 'black_knight', ''],
         ['', '', '', '', '', '', '', ''],
         ['', 'black_knight', '', '', '', '', '', ''],
-        ['white_knight', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],    
+        ['white_knight', '', '', 'white_pawn', '', 'black_knight', '', 'white_pawn'],    
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
     app = ChessBoard(game)
     for i in app.get_all_possible_moves("white"):
         print(i)
-    print(app.isCheck(player ="white"))
+    print(app.isCheckMate(player ="white"))
     app.mainloop()
