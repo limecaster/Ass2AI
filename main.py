@@ -26,7 +26,7 @@ class thread(threading.Thread):
         mins = mins % 60
     def run(self): 
         agent = Agent(board, 'white')
-        minimax = Minimax(3, board)
+        minimax = Minimax(2, board)
         count = 1
         while not board.is_game_over():
             time.sleep(1)
@@ -91,7 +91,7 @@ if __name__ == '__main__':
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    board = ChessBoard(draw_game, "white")
+    board = ChessBoard()
     [print(mv) for mv in board.get_all_possible_moves("white")]
 
     thread1 = thread("GFG", 1000,board) 
