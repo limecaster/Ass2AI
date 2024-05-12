@@ -27,7 +27,7 @@ class thread(threading.Thread):
         mins = mins % 60
     def run(self): 
         agent = Agent(board, 'white')
-        minimax = Minimax(3, board)
+        minimax = Minimax(2, board)
         count = 1
         while not board.is_game_over():
             if self.player:

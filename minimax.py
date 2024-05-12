@@ -218,7 +218,7 @@ class Minimax:
         best_move = self.get_best_move(True)
         end_time = time.time()
         total_time = end_time - start_time
-        self.log_time_move.append((total_time, best_move))
+        self.log_time_move.append(total_time)
         return best_move
     
     def get_best_move_for_black(self):
@@ -226,7 +226,7 @@ class Minimax:
         best_move = self.get_best_move(False)
         end_time = time.time()
         total_time = end_time - start_time
-        self.log_time_move.append((total_time, best_move))
+        self.log_time_move.append(total_time)
         return best_move
 
     def get_moves_time(self):
