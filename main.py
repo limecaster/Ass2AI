@@ -18,7 +18,18 @@ if __name__ == '__main__':
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', 'black_king']
         ]
-    board = ChessBoard()
+    
+    check_board = [
+        ['black_rook', '', 'black_bishop', '', 'black_king', 'black_bishop', '', 'black_rook'],
+        ['black_pawn', '', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn'],
+        ['', '', '', '', '', '', 'black_knight', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', 'black_knight', '', '', '', '', '', ''],
+        ['white_knight', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],    
+        ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
+        ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
+    ]
+    board = ChessBoard(check_board, 'white')
 
     agent = Agent(board, 'white')
     minimax = Minimax(3, board)
@@ -31,6 +42,7 @@ if __name__ == '__main__':
         board.make_move(agent_move)     
         print(f"Move {count}: White moves {agent_move}")
         
+        #[print(move) for move in board.get_all_possible_moves('black')]
         minimax_move = minimax.get_best_move_for_black()
         print(f"Move {count}: Black moves {minimax_move}")
         if minimax_move is None:
