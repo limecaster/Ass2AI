@@ -59,6 +59,8 @@ if __name__ == '__main__':
             print("White wins!")
         else:
             print("It's a draw!")
+    
+    print(minimax.get_moves_time())
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss
 

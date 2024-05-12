@@ -7,6 +7,7 @@ class Minimax:
         self.depth = depth
         self.board = board
         
+        self.log_time_move = []
         # If the pawn is in the center of the board, it is worth more
         # If the pawn is on the edge of the board, it is worth less
         # If the pawn is on sixth or seventh row, it is worth more cause it is closer to promotion
@@ -213,12 +214,24 @@ class Minimax:
         return best_move
     
     def get_best_move_for_white(self):
-        return self.get_best_move(True)
+        start_time = time.time()
+        best_move = self.get_best_move(True)
+        end_time = time.time()
+        total_time = end_time - start_time
+        self.log_time_move.append((total_time, best_move))
+        return best_move
     
     def get_best_move_for_black(self):
-        return self.get_best_move(False)
+        start_time = time.time()
+        best_move = self.get_best_move(False)
+        end_time = time.time()
+        total_time = end_time - start_time
+        self.log_time_move.append((total_time, best_move))
+        return best_move
 
-
+    def get_moves_time(self):
+        return self.log_time_move
+    
 if __name__ == '__main__':
     start_time = time.time()
     start_memory = psutil.Process().memory_info().rss
