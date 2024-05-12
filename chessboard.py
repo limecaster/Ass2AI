@@ -1276,7 +1276,7 @@ class ChessBoard(tk.Tk):
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["white_queen","white_bishop"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "white_bishop":
@@ -1290,7 +1290,7 @@ class ChessBoard(tk.Tk):
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["white_queen","white_bishop"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
 
@@ -1304,7 +1304,7 @@ class ChessBoard(tk.Tk):
                 if (self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_king") and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["white_queen","white_bishop"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "white_bishop":
@@ -1317,7 +1317,7 @@ class ChessBoard(tk.Tk):
                 if (self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_pawn" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_king") and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["white_queen","white_bishop"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["white_queen","white_bishop",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "white_bishop":
@@ -1330,7 +1330,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]][originalPos[1]+i] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["white_queen","white_rook"]:
+                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]][originalPos[1]+i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "white_rook":
@@ -1342,7 +1342,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]+i][originalPos[1]] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["white_queen","white_rook"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "white_rook":
@@ -1354,7 +1354,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]][originalPos[1]-i] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["white_queen","white_rook"]:
+                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]][originalPos[1]-i] == "white_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "white_rook":
@@ -1366,7 +1366,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]-i][originalPos[1]] == "white_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["white_queen","white_rook"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["white_queen","white_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]-i][originalPos[1]] == "white_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "white_rook":
@@ -1395,10 +1395,13 @@ class ChessBoard(tk.Tk):
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["black_queen","black_bishop"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
+                    
                     flag =False
                     break
+                
                 if self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]-i] == "black_bishop":
+                    
                     flag= True
                     break
                 i+=1
@@ -1410,7 +1413,7 @@ class ChessBoard(tk.Tk):
                     flag= True
                     break
                 
-                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["black_queen","black_bishop"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
 
@@ -1425,7 +1428,7 @@ class ChessBoard(tk.Tk):
                 if  self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_king" and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["black_queen","black_bishop"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]-i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]-i] == "black_bishop":
@@ -1439,7 +1442,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_king" and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["black_queen","black_bishop"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]+i]  not in ["black_queen","black_bishop",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]+i] == "black_bishop":
@@ -1453,7 +1456,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]][originalPos[1]+i] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["black_queen","black_rook"]:
+                if self.current_board[originalPos[0]][originalPos[1]+i]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]][originalPos[1]+i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]+i] == "black_rook":
@@ -1466,7 +1469,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]+i][originalPos[1]] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["black_queen","black_rook"]:
+                if self.current_board[originalPos[0]+i][originalPos[1]]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]+i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]+i][originalPos[1]] == "black_rook":
@@ -1480,7 +1483,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]][originalPos[1]-i] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["black_queen","black_rook"]:
+                if self.current_board[originalPos[0]][originalPos[1]-i]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]][originalPos[1]-i] == "black_queen" or self.current_board[originalPos[0]][originalPos[1]-i] == "black_rook":
@@ -1493,7 +1496,7 @@ class ChessBoard(tk.Tk):
                 if self.current_board[originalPos[0]-i][originalPos[1]] == "black_king"  and i==1:
                     flag= True
                     break
-                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["black_queen","black_rook"]:
+                if self.current_board[originalPos[0]-i][originalPos[1]]  not in ["black_queen","black_rook",""]:
                     flag =False
                     break
                 if self.current_board[originalPos[0]-i][originalPos[1]] == "black_queen" or self.current_board[originalPos[0]-i][originalPos[1]] == "black_rook":
@@ -1583,17 +1586,17 @@ if __name__ == "__main__":
     #     ]
     # test checkmate
     game = [
-        ['black_rook', '', '', '', 'black_king', '', '', 'black_rook'],
-        ['black_pawn', 'black_pawn', 'black_pawn', '', '', 'black_pawn','black_pawn', 'black_pawn'],
-        ['', '', '', '', 'black_pawn', 'black_knight', '', ''],
-        ['', 'black_knight', '', 'black_pawn', '', 'black_bishop', '', ''],
-        ['', '', '', '', '', 'white_pawn', 'white_pawn', ''], 
-        ['', '', '', 'white_pawn', '', '', '', 'white_pawn'],
-        ['white_pawn', '', '', 'black_queen', 'white_pawn', '', '', 'white_rook'],
-        ['white_rook', '', '', 'white_king', '', 'white_bishop', 'white_knight', '']
-        ]
-    app = ChessBoard()
+        ['black_rook', '', 'black_bishop', '', 'black_king', 'black_bishop', '', 'black_rook'],
+        ['black_pawn', '', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn', 'black_pawn'],
+        ['', '', '', '', '', '', 'black_knight', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', 'black_knight', '', '', '', '', '', ''],
+        ['white_knight', '', 'black_queen', 'white_pawn', '', '', '', 'white_pawn'],    
+        ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
+        ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
+    ]
+    app = ChessBoard(game)
     for i in app.get_all_possible_moves("white"):
         print(i)
-    print(app.isCheckMate(player ="white"))
+    print(app.isCheck(player ="white"))
     app.mainloop()
