@@ -18,7 +18,7 @@ class Move():
     def __str__(self) -> str:
         return self.unit_type + ': ' +str(self.position) + "->" +  str(self.new_pos) + " - " + self.special_move + " - " + self.promoted
 class ChessBoard(tk.Tk):
-    def __init__(self, current_board=None, current_player='white', move_log=[], playable = False):
+    def __init__(self, current_board=None, current_player='white', move_log=[], playable = False, player_side = ""):
         super().__init__()
         self.rows = 8
         self.columns = 8
@@ -29,6 +29,7 @@ class ChessBoard(tk.Tk):
         self.canvas.pack(fill="both", expand=True)
         self.draw_board()
         self.click = False
+        self.player_move = None
 
         self.current_board = current_board
         self.blackCastled = False
@@ -44,6 +45,9 @@ class ChessBoard(tk.Tk):
         self.current_player = current_player
         self.move_log = move_log
         self.playable = playable
+        self.playside = ""
+        if self.playable:
+            self.playside = player_side
 
         # tkinter
         self.oldPosX = None
@@ -113,7 +117,11 @@ class ChessBoard(tk.Tk):
                                              image=piece_image, tags=(piece, "piece"))
     
     def start_drag(self, event):
+        if self.is_game_over():
+            return
         if not self.playable:
+            return
+        if self.current_player != self.playside:
             return
         x, y = event.x, event.y
         overlapping = self.canvas.find_overlapping(x, y, x, y)
@@ -125,6 +133,8 @@ class ChessBoard(tk.Tk):
             self.oldPosY = y
             row = (y) // self.size
             col = (x) // self.size
+            if self.current_board[row][col].find(self.playside)<0:
+                return
             # print(f'tag:{tags[0]}') # tag[0] -> unitType
             # print(self.impact_pos())
             if tags[0].find("white")==0:
@@ -147,9 +157,14 @@ class ChessBoard(tk.Tk):
             self.impactPos = moves
     
     def drag(self, event):
+        if self.is_game_over():
+            return
         if not self.playable:
             return
+        if self.current_player != self.playside:
+            return
         if self.drag_data["piece"]:
+            #print(self.drag_data)
             dx = event.x - self.drag_data["x"]
             dy = event.y - self.drag_data["y"]
             self.canvas.move(self.drag_data["piece"], dx, dy)
@@ -158,7 +173,11 @@ class ChessBoard(tk.Tk):
         
     
     def drop(self, event):
+        if self.is_game_over():
+            return
         if not self.playable:
+            return
+        if self.current_player != self.playside:
             return
         row = (event.y) // self.size
         col = (event.x) // self.size
@@ -198,14 +217,9 @@ class ChessBoard(tk.Tk):
             tags = self.canvas.gettags(overlapping[-1])                                                
 
             self.move_log.append(Move((r,c),(row,col),tags[0]))
-            for ele in self.move_log:
-                print(ele)
-            self.previous_board.insert(0,copy.deepcopy(self.current_board))
-            unit = self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]]
-            self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]] = ""
-            self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = unit
-            if self.move_log[-1].special_move == "promote":
-                self.current_board[self.move_log[-1].new_pos[0]][self.move_log[-1].new_pos[1]] = self.move_log[-1].promoted
+            
+            self.player_move = Move(self.move_log[-1].position, self.move_log[-1].new_pos, self.current_board[self.move_log[-1].position[0]][self.move_log[-1].position[1]])
+            
             
         # self.make_move(self.move_log[-1])
 

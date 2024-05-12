@@ -12,11 +12,12 @@ import json
 import copy
 
 class thread(threading.Thread): 
-    def __init__(self, thread_name, thread_ID, board): 
+    def __init__(self, thread_name, thread_ID, board, play = False): 
         threading.Thread.__init__(self) 
         self.thread_name = thread_name 
         self.thread_ID = thread_ID 
         self.board = board
+        self.player = play
         # helper function to execute the threads
     def time_convert(self,sec):
         sec = int(sec)
@@ -29,17 +30,27 @@ class thread(threading.Thread):
         minimax = Minimax(3, board)
         count = 1
         while not board.is_game_over():
-            time.sleep(1)
-
-            agent_move = agent.get_random_move()
-            if agent_move is None:
-                print("Game over! White has no more moves.")
-                break
-            board.make_move(agent_move)     
-            print(f"Move {count}: White moves {agent_move}")
-        
+            if self.player:
+                self.board.current_player = "white"
+                while (self.board.player_move is None):
+                    time.sleep(0)
+                board.make_move(board.player_move)
+                print(f"Move {count}: Player moves {self.board.player_move}")
+     
+                board.player_move = None    
+            else:
+                time.sleep(1)
+                agent_move = agent.get_random_move()
+                if agent_move is None:
+                    print("Game over! White has no more moves.")
+                    break
+                board.make_move(agent_move)     
+                print(f"Move {count}: White moves {agent_move}")
+            
             #[print(move) for move in board.get_all_possible_moves('black')]
             board.boardDisplay()
+            self.board.current_player = "black"
+
             minimax_move = minimax.get_best_move_for_black()
             print(f"Move {count}: Black moves {minimax_move}")
             if minimax_move is None:
@@ -91,10 +102,10 @@ if __name__ == '__main__':
         ['', '', 'white_pawn', '', 'white_pawn', 'white_pawn', '', ''],
         ['white_rook', '', '', 'white_queen', 'white_king', 'white_bishop', 'white_knight', 'white_rook']
     ]
-    board = ChessBoard(draw_game, "white")
+    board = ChessBoard(draw_game, "white", playable=True,player_side="white")
     [print(mv) for mv in board.get_all_possible_moves("white")]
 
-    thread1 = thread("GFG", 1000,board) 
+    thread1 = thread("GFG", 1000,board,play=True) 
     thread1.start()
     board.mainloop()
     
