@@ -826,6 +826,10 @@ class ChessBoard(tk.Tk):
             return legalList
         else:
             return movesList
+    def boardDisplay(self):
+        self.canvas.delete("all")
+        self.draw_board()
+        self.draw_pieces()
     def make_move(self,move: Move):
         self.previous_board.insert(0,copy.deepcopy(self.current_board))
         unit = self.current_board[move.position[0]][move.position[1]]
@@ -833,17 +837,13 @@ class ChessBoard(tk.Tk):
         self.current_board[move.new_pos[0]][move.new_pos[1]] = unit
         if move.special_move == "promote":
             self.current_board[move.new_pos[0]][move.new_pos[1]] = move.promoted
-        self.canvas.delete("all")
-        self.draw_board()
-        self.draw_pieces()
+        
     def undo_move(self):
         if len(self.previous_board)==0:
             return
         self.current_board = copy.deepcopy(self.previous_board[0])
         self.previous_board.pop(0)
-        self.canvas.delete("all")
-        self.draw_board()
-        self.draw_pieces()
+        
     def impact_pos(self,unitType,pos):
         impactPos = [] 
         i,j = pos
